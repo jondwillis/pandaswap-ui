@@ -5,7 +5,6 @@
   "private": true,
   "devDependencies": {
     "@ethersproject/experimental": "^5.0.1",
-    "honeyswap-default-token-list": "^1.3.1",
     "@popperjs/core": "^2.4.4",
     "@reach/dialog": "^0.10.3",
     "@reach/portal": "^0.10.3",
@@ -46,6 +45,7 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^4.0.0",
     "ethers": "^5.0.7",
+    "honeyswap-default-token-list": "^1.3.1",
     "i18next": "^15.0.9",
     "i18next-browser-languagedetector": "^3.0.1",
     "i18next-xhr-backend": "^2.0.1",
@@ -76,7 +76,7 @@
     "start-server-and-test": "^1.11.0",
     "styled-components": "^4.2.0",
     "typescript": "^3.8.3",
-    "uniswap-bsc-sdk": "https://github.com/thebaoman/bsc-sdk"
+    "uniswap-bsc-sdk": "https://github.com/thebaoman/bsc-sdk#28864ca816bb8ec767766ff73d8befff7ae0ee04"
   },
   "resolutions": {
     "@walletconnect/web3-provider": "1.1.1-alpha.0"

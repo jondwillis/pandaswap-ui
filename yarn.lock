@@ -14508,6 +14508,18 @@ unique-slug@^2.0.0:
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
+"uniswap-bsc-sdk@https://github.com/thebaoman/bsc-sdk#28864ca816bb8ec767766ff73d8befff7ae0ee04":
+  version "1.0.3"
+  resolved "https://github.com/thebaoman/bsc-sdk#28864ca816bb8ec767766ff73d8befff7ae0ee04"
+  dependencies:
+    "@uniswap/v2-core" "^1.0.0"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+
 universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
