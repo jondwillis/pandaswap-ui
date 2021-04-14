@@ -13,9 +13,11 @@ import { YellowCard } from '../Card'
 import Settings from '../Settings'
 import Menu from '../Menu'
 
-import Row, { RowBetween } from '../Row'
+import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import Logo from '../../assets/images/bao-logo.png'
+import '../../assets/fonts.css'
+
 
 {
   /*import Logo from '../../assets/svg/logo.svg'
@@ -40,6 +42,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
+  padding-bottom: 1rem;
 `
 
 const HeaderElement = styled.div`
@@ -60,19 +63,41 @@ const Title = styled.a`
   display: flex;
   align-items: center;
   pointer-events: auto;
-
+  color: ${({ theme }) => theme.text6};
   :hover {
     cursor: pointer;
   }
+  text-decoration: none;
 `
 
-const TitleText = styled(Row)`
+const TitleText = styled.div`
   width: fit-content;
   white-space: nowrap;
+  color: 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     display: none;
   `};
+  font-family: "Kaushan Script", sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  letter-spacing: 0.03rem;
+  margin-top: -1rem;
+  margin-left: 1rem;
 `
+const TitleSubText = styled.div`
+  width: fit-content;
+  white-space: nowrap;
+  color: 
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    display: none;
+  `};
+  font-family: "Reem Kufi", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: .5rem;
+  letter-spacing: 0.03rem;
+`
+
 
 const AccountElement = styled.div<{ active: boolean }>`
   display: flex;
@@ -98,8 +123,13 @@ const TestnetWrapper = styled.div`
 const NetworkCard = styled(YellowCard)`
   width: fit-content;
   margin-right: 10px;
-  border-radius: 12px;
   padding: 8px 12px;
+  border: none;
+  background-color: transparent;
+  height: 35px;
+  background-color: ${({ theme }) => theme.bg3};
+  border-radius: 0.5rem;
+  color: ${({ theme }) => theme.text6};
 `
 
 const UniIcon = styled.div`
@@ -157,7 +187,10 @@ export default function Header() {
               <img src={Logo} alt="logo" height="50px" width="59px" />
             </UniIcon>
             <TitleText>
-              {/* <img style={{ marginLeft: '4px', marginTop: '4px' }} src={isDark ? WordmarkDark : Wordmark} alt="logo" />*/}
+              PandaSwap
+            <TitleSubText>
+              by Bao.Finance
+            </TitleSubText>
             </TitleText>
           </Title>
         </HeaderElement>

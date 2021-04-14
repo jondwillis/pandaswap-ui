@@ -9,6 +9,8 @@ import styled, {
 import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
 import { Colors } from './styled'
+import lightBG from '../assets/images/background-light.jpg'
+import darkBG from '../assets/images/background-dark.jpg'
 
 export * from './components'
 
@@ -51,6 +53,7 @@ export function colors(darkMode: boolean): Colors {
     text3: darkMode ? '#6C7284' : '#888D9B',
     text4: darkMode ? '#565A69' : '#C3C5CB',
     text5: darkMode ? '#2C2F36' : '#EDEEF2',
+    text6: darkMode ? '#FBFDF7' : '#1B3629',
 
     // backgrounds / greys
     bg1: darkMode ? '#212429' : '#FFFFFF',
@@ -58,6 +61,9 @@ export function colors(darkMode: boolean): Colors {
     bg3: darkMode ? '#40444F' : '#EDEEF2',
     bg4: darkMode ? '#565A69' : '#CED0D9',
     bg5: darkMode ? '#6C7284' : '#888D9B',
+
+    // background image
+    bgi: darkMode ? darkBG : lightBG,
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
@@ -212,9 +218,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
 html {
   color: ${({ theme }) => theme.text1};
   background-color: ${({ theme }) => theme.grd1};
-  background: linear-gradient(111.63deg, ${({ theme }) => theme.grd1} 0%, ${({ theme }) => theme.grd2} 49.48%, ${({
-  theme
-}) => theme.grd3} 100%);
+  background: linear-gradient(
+    to top, transparent, ${({ theme }) => theme.bg1}
+  ), url(${({ theme }) => theme.bgi}) no-repeat;
+  background-size: cover;
 }
 
 body {

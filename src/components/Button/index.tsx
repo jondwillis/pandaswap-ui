@@ -255,7 +255,7 @@ const ButtonErrorStyle = styled(Base)`
   }
 `
 
-const ButtonGrayAddHoney = styled(Base)`
+const ButtonGrayAddPanda = styled(Base)`
   background-color: #808080;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
@@ -275,10 +275,10 @@ const StyledPlusIcon = styled(PlusIcon)`
 
 export function ButtonImagePlus({ children, ...rest }: ButtonProps) {
   return (
-    <ButtonGrayAddHoney {...rest}>
+    <ButtonGrayAddPanda {...rest}>
       <StyledPlusIcon />
       {children}
-    </ButtonGrayAddHoney>
+    </ButtonGrayAddPanda>
   )
 }
 

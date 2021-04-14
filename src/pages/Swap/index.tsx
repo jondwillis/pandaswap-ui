@@ -253,7 +253,7 @@ export default function Swap() {
   ])
 
   const { ethereum } = window
-  const handleAddHnyToMM = useCallback(() => addTokenToMetamask(ethereum, HONEY), [])
+  const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, HONEY), [])
   const isHnySelected =
     currencies[Field.INPUT]?.symbol === HONEY.symbol || currencies[Field.OUTPUT]?.symbol === HONEY.symbol
 
@@ -266,7 +266,7 @@ export default function Swap() {
       />
       {isHnySelected && (
         <ButtonImagePlus
-          onClick={() => handleAddHnyToMM()}
+          onClick={() => handleAddPndaToMM()}
           style={{
             width: 'auto',
             position: 'absolute',
@@ -275,7 +275,7 @@ export default function Swap() {
             whiteSpace: 'nowrap'
           }}
         >
-          Add HNY to MetaMask
+          Add PNDA to MetaMask
         </ButtonImagePlus>
       )}
       <AppBody>
