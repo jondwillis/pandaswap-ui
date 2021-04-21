@@ -4,7 +4,7 @@ import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { injected } from '../connectors'
+import { bsc, injected } from '../connectors'
 import { NetworkContextName } from '../constants'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
@@ -27,6 +27,16 @@ export function useEagerConnect() {
         if (isMobile && window.ethereum) {
           activate(injected, undefined, true).catch(() => {
             setTried(true)
+          })
+        } else if (window.BinanceChain) {
+          bsc.isAuthorized().then(isAuthorized => {
+            if (isAuthorized) {
+              activate(bsc, undefined, true).catch(() => {
+                setTried(true)
+              })
+            } else {
+              setTried(true)
+            }
           })
         } else {
           setTried(true)
