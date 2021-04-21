@@ -12,6 +12,10 @@ interface Window {
     on?: (...args: any[]) => void
     removeListener?: (...args: any[]) => void
   }
+  BinanceChain?: {
+    isMetaMask?: false
+    on?: (...args: any[]) => void
+  }
   web3?: {}
 }
 
