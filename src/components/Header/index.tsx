@@ -129,7 +129,7 @@ const PandaIcon = styled.div`
   }
   ${({ theme }) => theme.mediaWidth.upToSmall`
     img { 
-      width: 0.25rem;
+      width: 0rem;
     }
   `};
 `
