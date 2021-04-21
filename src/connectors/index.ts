@@ -36,10 +36,10 @@ export const bsc = new BscConnector({
 })
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 56: 'https://dai.poa.network' },
+  rpc: { 56: 'https://bsc-dataseed.binance.org/' },
   bridge: 'https://bsc-dataseed.binance.org/',
   qrcode: true,
-  pollingInterval: 15000
+  pollingInterval: 5000
 })
 
 // mainnet only
