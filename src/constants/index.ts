@@ -1,7 +1,7 @@
 import { ChainId, JSBI, Percent, Token, WETH } from 'uniswap-bsc-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
-import { injected, walletconnect } from '../connectors'
+import { bsc, injected, walletconnect } from '../connectors'
 
 export const ROUTER_ADDRESS = '0x29D1Adbb65d93a5710cafe2EF0E8131f64E6AB22'
 
@@ -87,6 +87,30 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#4196FC',
     mobile: true
+  },
+  BSC: {
+    connector: bsc,
+    name: 'Binance Chain Wallet',
+    iconName: 'binanceChainWallet.svg',
+    description: 'Connect to Binance Chain Wallet',
+    href: null,
+    color: '#F0B90B'
+  },
+  MATH: {
+    connector: injected,
+    name: 'Math Wallet',
+    iconName: 'mathWallet.png',
+    description: 'Connect to Math Wallet',
+    href: null,
+    color: '#FFFFFF'
+  },
+  TRUST: {
+    connector: injected,
+    name: 'Trust Wallet',
+    iconName: 'trustWallet.svg',
+    description: 'Connect to Trust Wallet',
+    href: null,
+    color: '#FFFFFF'
   }
 }
 
