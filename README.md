@@ -10,7 +10,7 @@ To access the Pandaswap Interface, use an IPFS gateway link from the
 or visit [pandaswap.xyz](https://pandaswap.xyz).
 
 ## Listing a token
-Bao uses token lists, which are community managed lists.
+Pandaswap uses token lists, which are community managed lists.
 
 ## Contributing
 Please read through the [contribution guidelines](./CONTRIBUTING.md) for more information on 

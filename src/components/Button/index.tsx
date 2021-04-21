@@ -17,7 +17,7 @@ const Base = styled(RebassButton)<{
   width: ${({ width }) => (width ? width : '100%')};
   font-weight: 500;
   text-align: center;
-  border-radius: 20px;
+  border-radius: 12px;
   border-radius: ${({ borderRadius }) => borderRadius && borderRadius};
   outline: none;
   border: 1px solid transparent;
@@ -256,14 +256,35 @@ const ButtonErrorStyle = styled(Base)`
 `
 
 const ButtonGrayAddPanda = styled(Base)`
-  background-color: #808080;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
-  border-radius: 6px;
+  background-color: ${({ theme }) => theme.primary1};
+  color: white;
   height: 37px;
-
+  border-radius: 6px;
   &:hover {
     background: #7ce0d6;
   }
+  background-color: ${({ theme }) => theme.primary1};
+  color: white;
+  &:focus {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.primary1)};
+    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+  }
+  &:hover {
+    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+  }
+  &:active {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.primary1)};
+    background-color: ${({ theme }) => darken(0.1, theme.primary1)};
+  }
+  &:disabled {
+    background-color: ${({ theme, altDisbaledStyle }) => (altDisbaledStyle ? theme.primary1 : theme.bg3)};
+    color: ${({ theme, altDisbaledStyle }) => (altDisbaledStyle ? 'white' : theme.text3)};
+    cursor: auto;
+    box-shadow: none;
+    border: 1px solid transparent;
+    outline: none;
+  }
+
 `
 
 const StyledPlusIcon = styled(PlusIcon)`

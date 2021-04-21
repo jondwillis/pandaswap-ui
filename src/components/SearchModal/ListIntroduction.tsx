@@ -28,7 +28,7 @@ export default function ListIntroduction({ onSelectList }: { onSelectList: () =>
             alt="token-list-preview"
           />
           <Text style={{ marginBottom: '8px', textAlign: 'center' }}>
-            Baoswap now supports token lists. You can add your own custom lists via IPFS, HTTPS and ENS.{' '}
+            Pandaswap now supports token lists. You can add your own custom lists via IPFS, HTTPS and ENS.{' '}
           </Text>
           <ButtonPrimary onClick={onSelectList} id="list-introduction-choose-a-list">
             Choose a list

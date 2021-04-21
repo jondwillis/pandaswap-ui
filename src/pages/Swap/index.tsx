@@ -19,7 +19,7 @@ import { ArrowWrapper, BottomGrouping, Dots, SwapCallbackError, Wrapper } from '
 import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 
-import { BETTER_TRADE_LINK_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE, HONEY } from '../../constants'
+import { BETTER_TRADE_LINK_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE, PNDA } from '../../constants'
 import { isTradeBetter } from '../../data/V1'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -253,9 +253,9 @@ export default function Swap() {
   ])
 
   const { ethereum } = window
-  const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, HONEY), [])
-  const isHnySelected =
-    currencies[Field.INPUT]?.symbol === HONEY.symbol || currencies[Field.OUTPUT]?.symbol === HONEY.symbol
+  const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [])
+  const isPndaSelected =
+    currencies[Field.INPUT]?.symbol === PNDA.symbol || currencies[Field.OUTPUT]?.symbol === PNDA.symbol
 
   return (
     <>
@@ -264,7 +264,7 @@ export default function Swap() {
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
-      {isHnySelected && (
+      {isPndaSelected && (
         <ButtonImagePlus
           onClick={() => handleAddPndaToMM()}
           style={{

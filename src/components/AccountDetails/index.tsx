@@ -55,7 +55,7 @@ const UpperSection = styled.div`
 const InfoCard = styled.div`
   padding: 1rem;
   border: 1px solid ${({ theme }) => theme.bg3};
-  border-radius: 20px;
+  border-radius: 6px;
   position: relative;
   display: grid;
   grid-row-gap: 12px;
@@ -358,7 +358,7 @@ export default function AccountDetails({
                             href={chainId && getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on blockscout</span>
+                            <span style={{ marginLeft: '4px' }}>View on BSCScan</span>
                           </AddressLink>
                         )}
                       </div>
@@ -380,7 +380,7 @@ export default function AccountDetails({
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>View on Blockscout</span>
+                            <span style={{ marginLeft: '4px' }}>View on BSCScan</span>
                           </AddressLink>
                         )}
                       </div>

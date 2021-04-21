@@ -15,18 +15,8 @@ import Menu from '../Menu'
 
 import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
-import Logo from '../../assets/images/bao-logo.png'
+import Logo from '../../assets/images/pnda-logo.png'
 import '../../assets/fonts.css'
-
-
-{
-  /*import Logo from '../../assets/svg/logo.svg'
-import LogoDark from '../../assets/svg/logo_white.svg'
-import Wordmark from '../../assets/svg/wordmark.svg'
-import WordmarkDark from '../../assets/svg/wordmark_white.svg'
-import VersionSwitch from './VersionSwitch'
-import { useDarkModeManager } from '../../state/user/hooks'*/
-}
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -78,7 +68,7 @@ const TitleText = styled.div`
     display: none;
   `};
   font-family: "Kaushan Script", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 32px;
   letter-spacing: 0.03rem;
   margin-top: -1rem;
@@ -92,7 +82,7 @@ const TitleSubText = styled.div`
     display: none;
   `};
   font-family: "Reem Kufi", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   line-height: .5rem;
   letter-spacing: 0.03rem;
@@ -104,7 +94,7 @@ const AccountElement = styled.div<{ active: boolean }>`
   flex-direction: row;
   align-items: center;
   background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
-  border-radius: 12px;
+  border-radius: 6px;
   white-space: nowrap;
   width: 100%;
 
@@ -132,7 +122,7 @@ const NetworkCard = styled(YellowCard)`
   color: ${({ theme }) => theme.text6};
 `
 
-const UniIcon = styled.div`
+const PandaIcon = styled.div`
   transition: transform 0.3s ease;
   :hover {
     transform: rotate(-5deg);
@@ -174,18 +164,15 @@ export default function Header() {
   const { account, chainId } = useActiveWeb3React()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
-  {
-    /*const [isDark] = useDarkModeManager()*/
-  }
 
   return (
     <HeaderFrame>
       <RowBetween style={{ alignItems: 'flex-start' }} padding="1rem 1rem 0 1rem">
         <HeaderElement>
           <Title href=".">
-            <UniIcon>
+            <PandaIcon>
               <img src={Logo} alt="logo" height="50px" width="59px" />
-            </UniIcon>
+            </PandaIcon>
             <TitleText>
               PandaSwap
             <TitleSubText>
