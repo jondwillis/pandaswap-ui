@@ -110,7 +110,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     iconName: 'trustWallet.svg',
     description: 'Connect to Trust Wallet',
     href: null,
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    mobile: true
   }
 }
 
