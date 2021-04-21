@@ -95,6 +95,22 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Connect to Binance Chain Wallet',
     href: null,
     color: '#F0B90B'
+  },
+  MATH: {
+    connector: injected,
+    name: 'Math Wallet',
+    iconName: 'mathWallet.png',
+    description: 'Connect to Math Wallet',
+    href: null,
+    color: '#FFFFFF'
+  },
+  TRUST: {
+    connector: injected,
+    name: 'Trust Wallet',
+    iconName: 'trustWallet.svg',
+    description: 'Connect to Trust Wallet',
+    href: null,
+    color: '#FFFFFF'
   }
 }
 
