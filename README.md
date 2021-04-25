@@ -17,6 +17,6 @@ Please read through the [contribution guidelines](./CONTRIBUTING.md) for more in
 how to report new bugs, coding standards, and development guidelines.
 
 # Community 
-- Docs: [docs.bao.finance](https://docs.bao.finance)
+- Docs: [docs.bao.finance](https://docs.bao.finance/franchises/panda)
 - Twitter: [@thebaoman](https://twitter.com/thebaoman)
 - Discord: [Bao Finance Discord](https://discord.gg/BW3P62vJXT)
