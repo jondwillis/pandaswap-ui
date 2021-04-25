@@ -16,6 +16,7 @@ export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColo
   outline: none;
   background-color: ${({ backgroundColor }) => backgroundColor};
   color: ${({ theme }) => theme.white};
+  box-shadow: rgb(181, 176, 174) 1px 1px 2px, rgba(255, 252, 245, 0.5) -1px -1px 2px;
   width: 100%;
 
   :hover,

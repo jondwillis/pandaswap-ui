@@ -8,9 +8,9 @@ import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
 
 /**
- * Returns a map of the given addresses to their eventually consistent ETH balances.
+ * Returns a map of the given addresses to their eventually consistent BNB balances.
  */
-export function useETHBalances(
+export function useBNBBalances(
   uncheckedAddresses?: (string | undefined)[]
 ): { [address: string]: CurrencyAmount | undefined } {
   const multicallContract = useMulticallContract()
@@ -103,8 +103,8 @@ export function useCurrencyBalances(
   ])
 
   const tokenBalances = useTokenBalances(account, tokens)
-  const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
-  const ethBalance = useETHBalances(containsETH ? [account] : [])
+  const containsBNB: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
+  const ethBalance = useBNBBalances(containsBNB ? [account] : [])
 
   return useMemo(
     () =>

@@ -67,7 +67,7 @@ export function colors(darkMode: boolean): Colors {
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)',
-    advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
+    advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.95)',
 
     //primary colors
     primary1: darkMode ? '#76867f' : '#1c3629',
@@ -89,7 +89,7 @@ export function colors(darkMode: boolean): Colors {
     red2: '#F82D3A',
     green1: '#27AE60',
     yellow1: '#FFE270',
-    yellow2: '#1c3629'
+    yellow2: '#ffd73a'
 
     // dont wanna forget these blue yet
     // blue4: darkMode ? '#153d6f70' : '#C4D9F8',
@@ -221,7 +221,10 @@ html {
   background: linear-gradient(
     to top, transparent, ${({ theme }) => theme.bg1}
   ), url(${({ theme }) => theme.bgi}) no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
   background-size: cover;
+
 }
 
 body {

@@ -104,7 +104,7 @@ export default function Menu() {
             <BookOpen size={14} />
             Docs
           </MenuItem>
-          <MenuItem id="link" href="https://etherscan.io/address/0xBD530a1c060DC600b951f16dc656E4EA451d1A2D">
+          <MenuItem id="link" href="https://bscscan.io/address/0xBD530a1c060DC600b951f16dc656E4EA451d1A2D">
             <Code size={14} />
             Code
           </MenuItem>

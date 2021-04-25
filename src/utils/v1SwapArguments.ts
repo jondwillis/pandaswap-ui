@@ -24,20 +24,20 @@ export default function v1SwapArguments(trade: Trade, options: Omit<TradeOptions
     throw new Error('too many pairs')
   }
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
-  const inputETH = trade.inputAmount.currency === ETHER
-  const outputETH = trade.outputAmount.currency === ETHER
-  if (inputETH && outputETH) throw new Error('ETHER to ETHER')
+  const inputBNB = trade.inputAmount.currency === ETHER
+  const outputBNB = trade.outputAmount.currency === ETHER
+  if (inputBNB && outputBNB) throw new Error('ETHER to ETHER')
   const minimumAmountOut = toHex(trade.minimumAmountOut(options.allowedSlippage))
   const maximumAmountIn = toHex(trade.maximumAmountIn(options.allowedSlippage))
   const deadline = deadlineFromNow(options.ttl)
   if (isExactIn) {
-    if (inputETH) {
+    if (inputBNB) {
       return {
         methodName: 'ethToTokenTransferInput',
         args: [minimumAmountOut, deadline, options.recipient],
         value: maximumAmountIn
       }
-    } else if (outputETH) {
+    } else if (outputBNB) {
       return {
         methodName: 'tokenToEthTransferInput',
         args: [maximumAmountIn, minimumAmountOut, deadline, options.recipient],
@@ -56,13 +56,13 @@ export default function v1SwapArguments(trade: Trade, options: Omit<TradeOptions
       }
     }
   } else {
-    if (inputETH) {
+    if (inputBNB) {
       return {
         methodName: 'ethToTokenTransferOutput',
         args: [minimumAmountOut, deadline, options.recipient],
         value: maximumAmountIn
       }
-    } else if (outputETH) {
+    } else if (outputBNB) {
       return {
         methodName: 'tokenToEthTransferOutput',
         args: [minimumAmountOut, maximumAmountIn, deadline, options.recipient],

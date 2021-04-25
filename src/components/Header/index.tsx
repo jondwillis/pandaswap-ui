@@ -7,7 +7,7 @@ import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
 
-import { useETHBalances } from '../../state/wallet/hooks'
+import { useBNBBalances } from '../../state/wallet/hooks'
 
 import { YellowCard } from '../Card'
 import Settings from '../Settings'
@@ -163,7 +163,7 @@ const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
 export default function Header() {
   const { account, chainId } = useActiveWeb3React()
 
-  const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  const userEthBalance = useBNBBalances(account ? [account] : [])?.[account ?? '']
 
   return (
     <HeaderFrame>

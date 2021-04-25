@@ -13,7 +13,7 @@ import { useToken } from '../../hooks/Tokens'
 import { useV1ExchangeContract } from '../../hooks/useContract'
 import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
 import { useIsTransactionPending, useTransactionAdder } from '../../state/transactions/hooks'
-import { useTokenBalance, useETHBalances } from '../../state/wallet/hooks'
+import { useTokenBalance, useBNBBalances } from '../../state/wallet/hooks'
 import { BackArrow, TYPE } from '../../theme'
 import { isAddress } from '../../utils'
 import { BodyWrapper } from '../AppBody'
@@ -40,7 +40,7 @@ function V1PairRemoval({
 }) {
   const { chainId } = useActiveWeb3React()
   const totalSupply = useTotalSupply(liquidityTokenAmount.token)
-  const exchangeETHBalance = useETHBalances([liquidityTokenAmount.token.address])?.[liquidityTokenAmount.token.address]
+  const exchangeBNBBalance = useBNBBalances([liquidityTokenAmount.token.address])?.[liquidityTokenAmount.token.address]
   const exchangeTokenBalance = useTokenBalance(liquidityTokenAmount.token.address, token)
 
   const [confirmingRemoval, setConfirmingRemoval] = useState<boolean>(false)
@@ -48,8 +48,8 @@ function V1PairRemoval({
 
   const shareFraction: Fraction = totalSupply ? new Percent(liquidityTokenAmount.raw, totalSupply.raw) : ZERO_FRACTION
 
-  const ethWorth: CurrencyAmount = exchangeETHBalance
-    ? CurrencyAmount.ether(exchangeETHBalance.multiply(shareFraction).multiply(WEI_DENOM).quotient)
+  const ethWorth: CurrencyAmount = exchangeBNBBalance
+    ? CurrencyAmount.ether(exchangeBNBBalance.multiply(shareFraction).multiply(WEI_DENOM).quotient)
     : CurrencyAmount.ether(ZERO)
 
   const tokenWorth: TokenAmount = exchangeTokenBalance
@@ -72,7 +72,7 @@ function V1PairRemoval({
       )
       .then((response: TransactionResponse) => {
         addTransaction(response, {
-          summary: `Remove ${chainId && token.equals(WETH[chainId]) ? 'WETH' : token.symbol}/ETH V1 liquidity`
+          summary: `Remove ${chainId && token.equals(WETH[chainId]) ? 'WBNB' : token.symbol}/BNB V1 liquidity`
         })
         setPendingRemovalHash(response.hash)
       })
@@ -112,8 +112,8 @@ function V1PairRemoval({
       </LightCard>
       <TYPE.darkGray style={{ textAlign: 'center' }}>
         {`Your Pandaswap V1 ${
-          chainId && token.equals(WETH[chainId]) ? 'WETH' : token.symbol
-        }/ETH liquidity will be redeemed for underlying assets.`}
+          chainId && token.equals(WETH[chainId]) ? 'WBNB' : token.symbol
+        }/BNB liquidity will be redeemed for underlying assets.`}
       </TYPE.darkGray>
     </AutoColumn>
   )
