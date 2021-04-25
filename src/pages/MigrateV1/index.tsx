@@ -63,7 +63,7 @@ export default function MigrateV1() {
     ) : null
   })
 
-  // should never always be false, because a V1 exhchange exists for WBNB on all testnets
+  // should never always be false, because a V1 exhchange exists for WETH on all testnets
   const isLoading = Object.keys(V1Exchanges)?.length === 0 || V1LiquidityBalancesLoading
 
   return (

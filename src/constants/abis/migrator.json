@@ -29,7 +29,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "amountBNBMin",
+        "name": "amountETHMin",
         "type": "uint256"
       },
       {

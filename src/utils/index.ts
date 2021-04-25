@@ -31,7 +31,7 @@ export function getEtherscanLink(chainId: ChainId, data: string, type: 'transact
   if (chainId === 56) {
     prefix = 'https://bscscan.com/'
   } else {
-    prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}bscscan.io`
+    prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
 
   switch (type) {

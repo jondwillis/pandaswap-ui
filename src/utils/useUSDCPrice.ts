@@ -43,13 +43,13 @@ export default function useUSDCPrice(currency?: Currency): Price | undefined {
       return new Price(USDC, USDC, '1', '1')
     }
 
-    const ethPairBNBAmount = ethPair?.reserveOf(WETH[chainId])
-    const ethPairBNBUSDCValue: JSBI =
-      ethPairBNBAmount && usdcEthPair ? usdcEthPair.priceOf(WETH[chainId]).quote(ethPairBNBAmount).raw : JSBI.BigInt(0)
+    const ethPairETHAmount = ethPair?.reserveOf(WETH[chainId])
+    const ethPairETHUSDCValue: JSBI =
+      ethPairETHAmount && usdcEthPair ? usdcEthPair.priceOf(WETH[chainId]).quote(ethPairETHAmount).raw : JSBI.BigInt(0)
 
     // all other tokens
     // first try the usdc pair
-    if (usdcPairState === PairState.EXISTS && usdcPair && usdcPair.reserveOf(USDC).greaterThan(ethPairBNBUSDCValue)) {
+    if (usdcPairState === PairState.EXISTS && usdcPair && usdcPair.reserveOf(USDC).greaterThan(ethPairETHUSDCValue)) {
       const price = usdcPair.priceOf(wrapped)
       return new Price(currency, USDC, price.denominator, price.numerator)
     }

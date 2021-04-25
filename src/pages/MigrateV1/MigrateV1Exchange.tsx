@@ -21,7 +21,7 @@ import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallbac
 import { useV1ExchangeContract, useV2MigratorContract } from '../../hooks/useContract'
 import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
 import { useIsTransactionPending, useTransactionAdder } from '../../state/transactions/hooks'
-import { useBNBBalances, useTokenBalance } from '../../state/wallet/hooks'
+import { useETHBalances, useTokenBalance } from '../../state/wallet/hooks'
 import { BackArrow, ExternalLink, TYPE } from '../../theme'
 import { getEtherscanLink, isAddress } from '../../utils'
 import { BodyWrapper } from '../AppBody'
@@ -66,14 +66,14 @@ export function V1LiquidityInfo({
         <div style={{ marginLeft: '.75rem' }}>
           <TYPE.mediumHeader>
             {<FormattedPoolCurrencyAmount currencyAmount={liquidityTokenAmount} />}{' '}
-            {chainId && token.equals(WETH[chainId]) ? 'WBNB' : token.symbol}/BNB
+            {chainId && token.equals(WETH[chainId]) ? 'WETH' : token.symbol}/ETH
           </TYPE.mediumHeader>
         </div>
       </AutoRow>
 
       <RowBetween my="1rem">
         <Text fontSize={16} fontWeight={500}>
-          Pooled {chainId && token.equals(WETH[chainId]) ? 'WBNB' : token.symbol}:
+          Pooled {chainId && token.equals(WETH[chainId]) ? 'WETH' : token.symbol}:
         </Text>
         <RowFixed>
           <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
@@ -84,7 +84,7 @@ export function V1LiquidityInfo({
       </RowBetween>
       <RowBetween mb="1rem">
         <Text fontSize={16} fontWeight={500}>
-          Pooled BNB:
+          Pooled ETH:
         </Text>
         <RowFixed>
           <Text fontSize={16} fontWeight={500} marginLeft={'6px'}>
@@ -100,7 +100,7 @@ export function V1LiquidityInfo({
 function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount: TokenAmount; token: Token }) {
   const { account, chainId } = useActiveWeb3React()
   const totalSupply = useTotalSupply(liquidityTokenAmount.token)
-  const exchangeBNBBalance = useBNBBalances([liquidityTokenAmount.token.address])?.[liquidityTokenAmount.token.address]
+  const exchangeETHBalance = useETHBalances([liquidityTokenAmount.token.address])?.[liquidityTokenAmount.token.address]
   const exchangeTokenBalance = useTokenBalance(liquidityTokenAmount.token.address, token)
 
   const [v2PairState, v2Pair] = usePair(chainId ? WETH[chainId] : undefined, token)
@@ -113,8 +113,8 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
 
   const shareFraction: Fraction = totalSupply ? new Percent(liquidityTokenAmount.raw, totalSupply.raw) : ZERO_FRACTION
 
-  const ethWorth: CurrencyAmount = exchangeBNBBalance
-    ? CurrencyAmount.ether(exchangeBNBBalance.multiply(shareFraction).multiply(WEI_DENOM).quotient)
+  const ethWorth: CurrencyAmount = exchangeETHBalance
+    ? CurrencyAmount.ether(exchangeETHBalance.multiply(shareFraction).multiply(WEI_DENOM).quotient)
     : CurrencyAmount.ether(ZERO)
 
   const tokenWorth: TokenAmount = exchangeTokenBalance
@@ -124,8 +124,8 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
   const [approval, approve] = useApproveCallback(liquidityTokenAmount, MIGRATOR_ADDRESS)
 
   const v1SpotPrice =
-    exchangeTokenBalance && exchangeBNBBalance
-      ? exchangeTokenBalance.divide(new Fraction(exchangeBNBBalance.raw, WEI_DENOM))
+    exchangeTokenBalance && exchangeETHBalance
+      ? exchangeTokenBalance.divide(new Fraction(exchangeETHBalance.raw, WEI_DENOM))
       : null
 
   const priceDifferenceFraction: Fraction | undefined =
@@ -140,7 +140,7 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
     ? priceDifferenceFraction?.multiply('-1')
     : priceDifferenceFraction
 
-  const minAmountBNB: JSBI | undefined =
+  const minAmountETH: JSBI | undefined =
     v2SpotPrice && tokenWorth
       ? tokenWorth
           .divide(v2SpotPrice)
@@ -161,14 +161,14 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
 
   const migrator = useV2MigratorContract()
   const migrate = useCallback(() => {
-    if (!minAmountToken || !minAmountBNB || !migrator) return
+    if (!minAmountToken || !minAmountETH || !migrator) return
 
     setConfirmingMigration(true)
     migrator
       .migrate(
         token.address,
         minAmountToken.toString(),
-        minAmountBNB.toString(),
+        minAmountETH.toString(),
         account,
         Math.floor(new Date().getTime() / 1000) + DEFAULT_DEADLINE_FROM_NOW
       )
@@ -181,7 +181,7 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
       .catch(() => {
         setConfirmingMigration(false)
       })
-  }, [minAmountToken, minAmountBNB, migrator, token, account, addTransaction])
+  }, [minAmountToken, minAmountETH, migrator, token, account, addTransaction])
 
   const noLiquidityTokens = !!liquidityTokenAmount && liquidityTokenAmount.equalTo(ZERO)
 
@@ -212,26 +212,26 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
             <RowBetween>
               <TYPE.body>V1 Price:</TYPE.body>
               <TYPE.black>
-                {v1SpotPrice?.toSignificant(6)} {token.symbol}/BNB
+                {v1SpotPrice?.toSignificant(6)} {token.symbol}/ETH
               </TYPE.black>
             </RowBetween>
             <RowBetween>
               <div />
               <TYPE.black>
-                {v1SpotPrice?.invert()?.toSignificant(6)} BNB/{token.symbol}
+                {v1SpotPrice?.invert()?.toSignificant(6)} ETH/{token.symbol}
               </TYPE.black>
             </RowBetween>
 
             <RowBetween>
               <TYPE.body>V2 Price:</TYPE.body>
               <TYPE.black>
-                {v2SpotPrice?.toSignificant(6)} {token.symbol}/BNB
+                {v2SpotPrice?.toSignificant(6)} {token.symbol}/ETH
               </TYPE.black>
             </RowBetween>
             <RowBetween>
               <div />
               <TYPE.black>
-                {v2SpotPrice?.invert()?.toSignificant(6)} BNB/{token.symbol}
+                {v2SpotPrice?.invert()?.toSignificant(6)} ETH/{token.symbol}
               </TYPE.black>
             </RowBetween>
 
@@ -254,13 +254,13 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
             <RowBetween>
               <TYPE.body>V1 Price:</TYPE.body>
               <TYPE.black>
-                {v1SpotPrice?.toSignificant(6)} {token.symbol}/BNB
+                {v1SpotPrice?.toSignificant(6)} {token.symbol}/ETH
               </TYPE.black>
             </RowBetween>
             <RowBetween>
               <div />
               <TYPE.black>
-                {v1SpotPrice?.invert()?.toSignificant(6)} BNB/{token.symbol}
+                {v1SpotPrice?.invert()?.toSignificant(6)} ETH/{token.symbol}
               </TYPE.black>
             </RowBetween>
           </AutoColumn>
@@ -309,7 +309,7 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
         </div>
       </LightCard>
       <TYPE.darkGray style={{ textAlign: 'center' }}>
-        {`Your Pandaswap V1 ${token.symbol}/BNB liquidity will become Pandaswap V2 ${token.symbol}/BNB liquidity.`}
+        {`Your Pandaswap V1 ${token.symbol}/ETH liquidity will become Pandaswap V2 ${token.symbol}/ETH liquidity.`}
       </TYPE.darkGray>
     </AutoColumn>
   )
@@ -360,7 +360,7 @@ export default function MigrateV1Exchange({
         ) : validatedAddress && chainId && token?.equals(WETH[chainId]) ? (
           <>
             <TYPE.body my={9} style={{ fontWeight: 400 }}>
-              Because Pandaswap V2 uses WBNB under the hood, your Pandaswap V1 WBNB/BNB liquidity cannot be migrated.
+              Because Pandaswap V2 uses WETH under the hood, your Pandaswap V1 WETH/ETH liquidity cannot be migrated.
               You may want to remove your liquidity instead.
             </TYPE.body>
 
