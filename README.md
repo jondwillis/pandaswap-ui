@@ -1,5 +1,4 @@
 # Pandaswap
-![GitHub Super-Linter](https://github.com/baofinance/pandaswap-ui/workflows/Lint%20Code%20Base/badge.svg)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
 An open source interface for [Pandaswap](https://pandaswap.xyz) -- a protocol for decentralized exchange of xDai tokens.
