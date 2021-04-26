@@ -5,7 +5,7 @@ An open source interface for [Pandaswap](https://pandaswap.xyz) -- a protocol fo
 
 ## Accessing the Pandaswap Interface
 To access the Pandaswap Interface, use an IPFS gateway link from the
-[latest release](https://github.com/1Hive/uniswap-interface/releases/latest),
+[latest release](https://github.com/baofinance/pandaswap-ui/releases/latest),
 or visit [pandaswap.xyz](https://pandaswap.xyz).
 
 ## Listing a token
