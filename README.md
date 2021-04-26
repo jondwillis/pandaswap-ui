@@ -10,13 +10,13 @@ To access the Pandaswap Interface, use an IPFS gateway link from the
 or visit [pandaswap.xyz](https://pandaswap.xyz).
 
 ## Listing a token
-Bao uses token lists, which are community managed lists.
+Pandaswap uses token lists, which are community managed lists.
 
 ## Contributing
 Please read through the [contribution guidelines](./CONTRIBUTING.md) for more information on 
 how to report new bugs, coding standards, and development guidelines.
 
 # Community 
-- Docs: [docs.bao.finance](https://docs.bao.finance)
+- Docs: [docs.bao.finance](https://docs.bao.finance/franchises/panda)
 - Twitter: [@thebaoman](https://twitter.com/thebaoman)
 - Discord: [Bao Finance Discord](https://discord.gg/BW3P62vJXT)

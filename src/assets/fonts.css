@@ -1,0 +1,10 @@
+  @font-face {
+    font-family: 'Kaushan Script';
+    src: url('./fonts/KaushanScript-Regular.woff2');
+  }
+  
+  @font-face {
+    font-family: 'Noto Sans';
+    src: url('./fonts/NotoSans-Regular.woff2');
+  }
+  

@@ -5,114 +5,114 @@ import { darken } from 'polished'
 import { ArrowLeft, X } from 'react-feather'
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
-  backgroundColor: warning ? theme.red1 : theme.primary1
+	backgroundColor: warning ? theme.red1 : theme.primary1
 }))`
-  padding: 1rem 2rem 1rem 2rem;
-  border-radius: 3rem;
-  cursor: pointer;
-  user-select: none;
-  font-size: 1rem;
-  border: none;
-  outline: none;
-  background-color: ${({ backgroundColor }) => backgroundColor};
-  color: ${({ theme }) => theme.white};
-  width: 100%;
+	padding: 1rem 2rem 1rem 2rem;
+	border-radius: 3rem;
+	cursor: pointer;
+	user-select: none;
+	font-size: 1rem;
+	border: none;
+	outline: none;
+	background-color: ${({ backgroundColor }) => backgroundColor};
+	color: ${({ theme }) => theme.white};
+	width: 100%;
 
-  :hover,
-  :focus {
-    background-color: ${({ backgroundColor }) => darken(0.05, backgroundColor)};
-  }
+	:hover,
+	:focus {
+		background-color: ${({ backgroundColor }) => darken(0.05, backgroundColor)};
+	}
 
-  :active {
-    background-color: ${({ backgroundColor }) => darken(0.1, backgroundColor)};
-  }
+	:active {
+		background-color: ${({ backgroundColor }) => darken(0.1, backgroundColor)};
+	}
 
-  :disabled {
-    background-color: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text4};
-    cursor: auto;
-  }
+	:disabled {
+		background-color: ${({ theme }) => theme.bg1};
+		color: ${({ theme }) => theme.text4};
+		cursor: auto;
+	}
 `
 
 export const CloseIcon = styled(X)<{ onClick: () => void }>`
-  cursor: pointer;
+	cursor: pointer;
 `
 
 // A button that triggers some onClick result, but looks like a link.
 export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
-  border: none;
-  text-decoration: none;
-  background: none;
+	border: none;
+	text-decoration: none;
+	background: none;
 
-  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.primary1)};
-  font-weight: 500;
+	cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+	color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.primary1)};
+	font-weight: 500;
 
-  :hover {
-    text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
-  }
+	:hover {
+		text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
+	}
 
-  :focus {
-    outline: none;
-    text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
-  }
+	:focus {
+		outline: none;
+		text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
+	}
 
-  :active {
-    text-decoration: none;
-  }
+	:active {
+		text-decoration: none;
+	}
 `
 
 // An internal link from the react-router-dom library that is correctly styled
 export const StyledInternalLink = styled(Link)`
-  text-decoration: none;
-  cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
-  font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+	color: ${({ theme }) => theme.primary1};
+	font-weight: 500;
 
-  :hover {
-    text-decoration: underline;
-  }
+	:hover {
+		text-decoration: underline;
+	}
 
-  :focus {
-    outline: none;
-    text-decoration: underline;
-  }
+	:focus {
+		outline: none;
+		text-decoration: underline;
+	}
 
-  :active {
-    text-decoration: none;
-  }
+	:active {
+		text-decoration: none;
+	}
 `
 
 const StyledLink = styled.a`
-  text-decoration: none;
-  cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
-  font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+	color: ${({ theme }) => theme.primary1};
+	font-weight: 500;
 
-  :hover {
-    text-decoration: underline;
-  }
+	:hover {
+		text-decoration: underline;
+	}
 
-  :focus {
-    outline: none;
-    text-decoration: underline;
-  }
+	:focus {
+		outline: none;
+		text-decoration: underline;
+	}
 
-  :active {
-    text-decoration: none;
-  }
+	:active {
+		text-decoration: none;
+	}
 `
 
 /**
  * Outbound link that handles firing google analytics events
  */
 export function ExternalLink({
-  target = '_blank',
-  href,
-  rel = 'noopener noreferrer',
-  ...rest
+	target = '_blank',
+	href,
+	rel = 'noopener noreferrer',
+	...rest
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  return <StyledLink target={target} rel={rel} href={href} {...rest} />
+	return <StyledLink target={target} rel={rel} href={href} {...rest} />
 }
 
 const rotate = keyframes`
@@ -125,18 +125,18 @@ const rotate = keyframes`
 `
 
 export const Spinner = styled.img`
-  animation: 2s ${rotate} linear infinite;
-  width: 16px;
-  height: 16px;
+	animation: 2s ${rotate} linear infinite;
+	width: 16px;
+	height: 16px;
 `
 
 const BackArrowLink = styled(StyledInternalLink)`
-  color: ${({ theme }) => theme.text1};
+	color: ${({ theme }) => theme.text1};
 `
 export function BackArrow({ to }: { to: string }) {
-  return (
-    <BackArrowLink to={to}>
-      <ArrowLeft />
-    </BackArrowLink>
-  )
+	return (
+		<BackArrowLink to={to}>
+			<ArrowLeft />
+		</BackArrowLink>
+	)
 }

@@ -18,35 +18,35 @@ import getLibrary from './utils/getLibrary'
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
 if ('ethereum' in window) {
-  ;(window.ethereum as any).autoRefreshOnNetworkChange = false
+	;(window.ethereum as any).autoRefreshOnNetworkChange = false
 }
 
 function Updaters() {
-  return (
-    <>
-      <ListsUpdater />
-      <UserUpdater />
-      <ApplicationUpdater />
-      <TransactionUpdater />
-      <MulticallUpdater />
-    </>
-  )
+	return (
+		<>
+			<ListsUpdater />
+			<UserUpdater />
+			<ApplicationUpdater />
+			<TransactionUpdater />
+			<MulticallUpdater />
+		</>
+	)
 }
 
 ReactDOM.render(
-  <StrictMode>
-    <FixedGlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Provider store={store}>
-          <Updaters />
-          <ThemeProvider>
-            <ThemedGlobalStyle />
-            <App />
-          </ThemeProvider>
-        </Provider>
-      </Web3ProviderNetwork>
-    </Web3ReactProvider>
-  </StrictMode>,
-  document.getElementById('root')
+	<StrictMode>
+		<FixedGlobalStyle />
+		<Web3ReactProvider getLibrary={getLibrary}>
+			<Web3ProviderNetwork getLibrary={getLibrary}>
+				<Provider store={store}>
+					<Updaters />
+					<ThemeProvider>
+						<ThemedGlobalStyle />
+						<App />
+					</ThemeProvider>
+				</Provider>
+			</Web3ProviderNetwork>
+		</Web3ReactProvider>
+	</StrictMode>,
+	document.getElementById('root')
 )
