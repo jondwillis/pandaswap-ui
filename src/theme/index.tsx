@@ -222,6 +222,9 @@ html {
     to top, transparent, ${({ theme }) => theme.bg1}
   ), url(${({ theme }) => theme.bgi}) no-repeat;
   background-size: cover;
+  background-attachment: fixed;
+  background-position: center center
+  
 }
 
 body {

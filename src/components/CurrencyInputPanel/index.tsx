@@ -128,7 +128,6 @@ interface CurrencyInputPanelProps {
 	hideInput?: boolean
 	otherCurrency?: Currency | null
 	id: string
-	showCommonBases?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -144,8 +143,7 @@ export default function CurrencyInputPanel({
 	pair = null, // used for double token logo
 	hideInput = false,
 	otherCurrency,
-	id,
-	showCommonBases
+	id
 }: CurrencyInputPanelProps) {
 	const { t } = useTranslation()
 
@@ -238,7 +236,6 @@ export default function CurrencyInputPanel({
 					onCurrencySelect={onCurrencySelect}
 					selectedCurrency={currency}
 					otherSelectedCurrency={otherCurrency}
-					showCommonBases={showCommonBases}
 				/>
 			)}
 		</InputPanel>

@@ -280,7 +280,7 @@ export default function AddLiquidity({
 					history.push(`/add/${newCurrencyIdB}`)
 				}
 			} else {
-				history.push(`/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
+				history.push(`/add/${currencyIdA ? currencyIdA : 'BNB'}/${newCurrencyIdB}`)
 			}
 		},
 		[currencyIdA, history, currencyIdB]
@@ -343,7 +343,6 @@ export default function AddLiquidity({
 							showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
 							currency={currencies[Field.CURRENCY_A]}
 							id="add-liquidity-input-tokena"
-							showCommonBases
 						/>
 						<ColumnCenter>
 							<Plus size="16" color={theme.text2} />
@@ -358,7 +357,6 @@ export default function AddLiquidity({
 							showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
 							currency={currencies[Field.CURRENCY_B]}
 							id="add-liquidity-input-tokenb"
-							showCommonBases
 						/>
 						{currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
 							<>
