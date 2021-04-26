@@ -1,12 +1,12 @@
 # Pandaswap
-![GitHub Super-Linter](https://github.com/baofinance/pandaswap-ui/workflows/Lint%20Code%20Base/badge.svg)
+![Linting Status](https://github.com/baofinance/pandaswap-ui/workflows/Lint%20Code%20Base/badge.svg)
 [![Styled With Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
 An open source interface for [Pandaswap](https://pandaswap.xyz) -- a protocol for decentralized exchange of xDai tokens.
 
 ## Accessing the Pandaswap Interface
 To access the Pandaswap Interface, use an IPFS gateway link from the
-[latest release](https://github.com/1Hive/uniswap-interface/releases/latest),
+[latest release](https://github.com/baofinance/pandaswap-ui/releases/latest),
 or visit [pandaswap.xyz](https://pandaswap.xyz).
 
 ## Listing a token

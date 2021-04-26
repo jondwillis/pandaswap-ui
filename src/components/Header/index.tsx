@@ -148,6 +148,25 @@ const BalanceText = styled(Text)`
   `};
 `
 
+const StyledTradeLink = styled.a`
+	background-image: linear-gradient(rgb(13, 14, 33), rgb(13, 14, 33)),
+		radial-gradient(circle at left top, rgb(1, 110, 218), rgb(217, 0, 192));
+	text-decoration: none;
+	color: ${({ theme }) => theme.primary1};
+	border-radius: 6px;
+	font-weight: 600;
+	font-family: 'Noto Sans';
+	margin-right: 10px;
+	padding: 8px 12px;
+	height: 35px;
+
+	transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+
+	@media (max-width: 960px) {
+		display: none;
+	}
+`
+
 const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
 	[ChainId.MAINNET]: null,
 	[ChainId.RINKEBY]: 'Rinkeby',
@@ -188,6 +207,18 @@ export default function Header() {
 								</BalanceText>
 							) : null}
 							<Web3Status />
+							<TestnetWrapper>
+								<StyledTradeLink
+									style={{
+										background: `linear-gradient(128.17deg, #337855 -14.78%, #4ab684 110.05%)`,
+										color: 'white'
+									}}
+									target="_blank"
+									href="https://farms.pandaswap.xyz/"
+								>
+									Farms
+								</StyledTradeLink>
+							</TestnetWrapper>
 						</AccountElement>
 					</HeaderElement>
 					<HeaderElementWrap>
