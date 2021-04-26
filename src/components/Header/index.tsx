@@ -207,7 +207,8 @@ export default function Header() {
 								</BalanceText>
 							) : null}
 							<Web3Status />
-							<TestnetWrapper>
+						</AccountElement>
+						<TestnetWrapper>
 								<StyledTradeLink
 									style={{
 										background: `linear-gradient(128.17deg, #337855 -14.78%, #4ab684 110.05%)`,
@@ -219,7 +220,6 @@ export default function Header() {
 									Farms
 								</StyledTradeLink>
 							</TestnetWrapper>
-						</AccountElement>
 					</HeaderElement>
 					<HeaderElementWrap>
 						{/* <VersionSwitch />*/}
