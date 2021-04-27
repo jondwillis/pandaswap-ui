@@ -312,7 +312,7 @@ export function useAPY(
     if (!baoPriceUsd || !tvlUsd || !tvlUsd.greaterThan('0') || !newRewardPerBlock) {
       return undefined
     }
-    const blocksPerYear = JSBI.BigInt(6311390) // (31556952 (seconds / year)) / (5 blocks/second) = 6311390.4
+    const blocksPerYear = JSBI.BigInt(10518984) // (31556952 = (seconds / year)) / (3 second/block) = 10518984.4
 
     const decimated = JSBI.exponentiate(ten, JSBI.BigInt((rewardToken.decimals - 1).toString()))
 
@@ -338,7 +338,8 @@ export function useAllAPYs(
       if (!baoPriceUsd || !tvlUsd || !tvlUsd.greaterThan('0') || !newRewardPerBlock) {
         return undefined
       }
-      const blocksPerYear = JSBI.BigInt(6311390) // (31556952 (seconds / year)) / (5 blocks/second) = 6311390.4
+
+      const blocksPerYear = JSBI.BigInt(10518984) // (31556952 = (seconds / year)) / (3 seconds/block) = 10518984.4
 
       const decimated = JSBI.exponentiate(ten, JSBI.BigInt((rewardToken.decimals - 1).toString()))
 
