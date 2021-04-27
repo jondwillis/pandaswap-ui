@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { AppState } from '../index'
 import { ChainId } from 'uniswap-bsc-sdk'
 
-export function useBlockNumber(overrideChainId?: ChainId | undefined): number | undefined {
+export function useBlockNumber(overrideChainId: ChainId | undefined = ChainId.XDAI): number | undefined {
   const activeWeb3 = useActiveWeb3React()
   const chainId = overrideChainId ?? activeWeb3.chainId
 

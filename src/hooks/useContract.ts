@@ -70,20 +70,12 @@ export function useWETHContract(withSignerIfPossible?: boolean): Contract | null
   return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
 }
 
-export function useLPContract(
-  address?: string,
-  withSignerIfPossible?: boolean,
-  overrideChainId?: ChainId
-): Contract | null {
-  return useContract(address, UNIV2LP, withSignerIfPossible, overrideChainId)
+export function useLPContract(address?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, UNIV2LP, withSignerIfPossible)
 }
 
-export function useLPContracts(
-  addresses: string[],
-  withSignerIfPossible?: boolean,
-  overrideChainId?: ChainId
-): (Contract | null)[] {
-  return useAllContracts(addresses, UNIV2LP, withSignerIfPossible, overrideChainId)
+export function useLPContracts(addresses: string[], withSignerIfPossible?: boolean): (Contract | null)[] {
+  return useAllContracts(addresses, UNIV2LP, withSignerIfPossible)
 }
 
 export function useMasterChefContract(withSignerIfPossible?: boolean): Contract | null {
@@ -151,7 +143,7 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 export function useMulticallContract(overrideChainId?: ChainId): Contract | null {
   const activeWeb3React = useActiveWeb3React()
   const chainId = overrideChainId ?? activeWeb3React.chainId
-  return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false, chainId)
+  return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
 }
 
 export function useSocksController(): Contract | null {
