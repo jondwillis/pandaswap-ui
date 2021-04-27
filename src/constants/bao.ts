@@ -213,6 +213,7 @@ export const priceOracles = {
     [addressMap.PNDA]: 'bao-finance',
     [addressMap.BNB]: '0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE',
     [addressMap.BUSD]: '0xcBb98864Ef56E9042e7d2efef76141f15731B82f',
+    [addressMap.vUSDC]: '0x51597f405303C4377E36123cBc172b13269EA163',
     [addressMap.USDC]: '0x51597f405303C4377E36123cBc172b13269EA163',
     [addressMap.ETH]: '0x9ef1B8c0E4F7dc8bF5719Ea496883DC6401d5b2e',
     [addressMap.DAI]: '0x132d3C0B1D2cEa0BC552588063bdBb210FDeecfA',
@@ -279,7 +280,7 @@ export const supportedPools: SupportedPool[] = [
       56: '0xbe01056Bc0e29eb28c9c357c227e320Afd12776C',
     },
     tokenAddresses: {
-      56: [tokenMap.PNDA, tokenMap.USDC],
+      56: [tokenMap.PNDA, tokenMap.vUSDC],
     },
     tokenDecimals: 18,
     name: 'PNDA-USDC',
