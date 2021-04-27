@@ -133,7 +133,7 @@ export function FarmPositionCard({
 							justify="end"
 							style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end', paddingRight: '0.5rem' }}
 						>
-							{apy?.greaterThan('0') && (
+							{apy?.greaterThan('0') && !farmablePool.isSushi && (
 								<StyledInternalLink to="/analytics">
 									{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
 								</StyledInternalLink>

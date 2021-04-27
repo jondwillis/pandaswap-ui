@@ -83,7 +83,7 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 						</RowFixed>
 						<RowFixed>
 							<AutoColumn gap="4px">
-								{apy?.greaterThan('0') && (
+								{apy?.greaterThan('0') && !farmablePool.isSushi && (
 									<StyledInternalLink to="/analytics">
 										{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
 									</StyledInternalLink>
