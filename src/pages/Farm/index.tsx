@@ -74,7 +74,7 @@ export default function Farm() {
 	const masterChefContract = useMasterChefContract()
 
 	const lockedEarnedAmount = useLockedEarned()
-	const unlockBlock = 20038657
+	const unlockBlock = 15513277
 	const latestBlockNumber = useBlockNumber() || unlockBlock
 	const remainingBlocks = Math.max(unlockBlock - latestBlockNumber, 0)
 
