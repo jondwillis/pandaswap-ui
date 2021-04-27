@@ -19,7 +19,7 @@ if (typeof NETWORK_URL === 'undefined') {
 }
 
 export const network = new NetworkConnector({
-  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL }
+  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
 })
 
 let networkLibrary: Web3Provider | undefined
@@ -28,34 +28,34 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [56]
+  supportedChainIds: [56],
 })
 
 export const bsc = new BscConnector({
-  supportedChainIds: [56]
+  supportedChainIds: [56],
 })
 
 export const walletconnect = new WalletConnectConnector({
   rpc: { 56: 'https://bsc-dataseed.binance.org/' },
   bridge: 'https://bsc-dataseed.binance.org/',
   qrcode: true,
-  pollingInterval: 5000
+  pollingInterval: 5000,
 })
 
 // mainnet only
 export const fortmatic = new FortmaticConnector({
   apiKey: FORMATIC_KEY ?? '',
-  chainId: 1
+  chainId: 1,
 })
 
 export const portis = new PortisConnector({
   dAppId: PORTIS_ID ?? '',
-  networks: [100]
+  networks: [100],
 })
 
 // mainnet only
 export const walletlink = new WalletLinkConnector({
   url: NETWORK_URL,
   appName: 'Pandaswap',
-  appLogoUrl: 'https://i.imgur.com/QdfaOR1.png'
+  appLogoUrl: 'https://i.imgur.com/QdfaOR1.png',
 })

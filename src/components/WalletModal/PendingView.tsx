@@ -25,7 +25,7 @@ const LoadingMessage = styled.div<{ error?: boolean }>`
 	${({ theme }) => theme.flexRowNoWrap};
 	align-items: center;
 	justify-content: flex-start;
-	border-radius: 6px;
+	border-radius: 12px;
 	margin-bottom: 20px;
 	color: ${({ theme, error }) => (error ? theme.red1 : 'inherit')};
 	border: 1px solid ${({ theme, error }) => (error ? theme.red1 : theme.text4)};
@@ -67,7 +67,7 @@ export default function PendingView({
 	connector,
 	error = false,
 	setPendingError,
-	tryActivation
+	tryActivation,
 }: {
 	connector?: AbstractConnector
 	error?: boolean
@@ -100,7 +100,7 @@ export default function PendingView({
 					)}
 				</LoadingWrapper>
 			</LoadingMessage>
-			{Object.keys(SUPPORTED_WALLETS).map(key => {
+			{Object.keys(SUPPORTED_WALLETS).map((key) => {
 				const option = SUPPORTED_WALLETS[key]
 				if (option.connector === connector) {
 					if (option.connector === injected) {

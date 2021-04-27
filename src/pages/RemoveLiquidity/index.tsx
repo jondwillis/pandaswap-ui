@@ -1,19 +1,20 @@
 // import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, ETHER, Percent } from 'uniswap-bsc-sdk'
+import { Currency, currencyEquals, ETHER, Percent, WETH } from 'uniswap-bsc-sdk'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import { ButtonPrimary, ButtonLight, ButtonError, ButtonConfirmed } from '../../components/Button'
+import { ButtonPrimary, ButtonError, ButtonConfirmed } from '../../components/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
+import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../components/Row'
 
 import Slider from '../../components/Slider'
@@ -24,7 +25,7 @@ import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
-import { TYPE } from '../../theme'
+import { StyledInternalLink, TYPE } from '../../theme'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
@@ -43,15 +44,15 @@ import { BigNumber } from '@ethersproject/bignumber'
 export default function RemoveLiquidity({
 	history,
 	match: {
-		params: { currencyIdA, currencyIdB }
-	}
+		params: { currencyIdA, currencyIdB },
+	},
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
 	const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
 	const { account, chainId, library } = useActiveWeb3React()
 	const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
 		currencyA,
 		currencyB,
-		chainId
+		chainId,
 	])
 
 	const theme = useContext(ThemeContext)
@@ -86,7 +87,7 @@ export default function RemoveLiquidity({
 		[Field.CURRENCY_A]:
 			independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
 		[Field.CURRENCY_B]:
-			independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+			independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
 	}
 
 	const atMaxAmount = parsedAmounts[Field.LIQUIDITY_PERCENT]?.equalTo(new Percent('1'))
@@ -113,7 +114,7 @@ export default function RemoveLiquidity({
 		//   { name: 'verifyingContract', type: 'address' }
 		// ]
 		// const domain = {
-		//   name: 'Pandaswap V2',
+		//   name: 'Baoswap V2',
 		//   version: '1',
 		//   chainId: chainId,
 		//   verifyingContract: pair.liquidityToken.address
@@ -155,13 +156,13 @@ export default function RemoveLiquidity({
 	)
 
 	const onLiquidityInput = useCallback((typedValue: string): void => onUserInput(Field.LIQUIDITY, typedValue), [
-		onUserInput
+		onUserInput,
 	])
 	const onCurrencyAInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_A, typedValue), [
-		onUserInput
+		onUserInput,
 	])
 	const onCurrencyBInput = useCallback((typedValue: string): void => onUserInput(Field.CURRENCY_B, typedValue), [
-		onUserInput
+		onUserInput,
 	])
 
 	// tx sending
@@ -176,7 +177,7 @@ export default function RemoveLiquidity({
 
 		const amountsMin = {
 			[Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
-			[Field.CURRENCY_B]: calculateSlippageAmount(currencyAmountB, allowedSlippage)[0]
+			[Field.CURRENCY_B]: calculateSlippageAmount(currencyAmountB, allowedSlippage)[0],
 		}
 
 		if (!currencyA || !currencyB) throw new Error('missing tokens')
@@ -201,7 +202,7 @@ export default function RemoveLiquidity({
 					amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
 					amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
 					account,
-					deadlineFromNow
+					deadlineFromNow,
 				]
 			}
 			// removeLiquidity
@@ -214,7 +215,7 @@ export default function RemoveLiquidity({
 					amountsMin[Field.CURRENCY_A].toString(),
 					amountsMin[Field.CURRENCY_B].toString(),
 					account,
-					deadlineFromNow
+					deadlineFromNow,
 				]
 			}
 		}
@@ -233,7 +234,7 @@ export default function RemoveLiquidity({
 					false,
 					signatureData.v,
 					signatureData.r,
-					signatureData.s
+					signatureData.s,
 				]
 			}
 			// removeLiquidityETHWithPermit
@@ -250,7 +251,7 @@ export default function RemoveLiquidity({
 					false,
 					signatureData.v,
 					signatureData.r,
-					signatureData.s
+					signatureData.s,
 				]
 			}
 		} else {
@@ -258,17 +259,17 @@ export default function RemoveLiquidity({
 		}
 
 		const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
-			methodNames.map(methodName =>
+			methodNames.map((methodName) =>
 				router.estimateGas[methodName](...args)
 					.then(calculateGasMargin)
-					.catch(error => {
+					.catch((error) => {
 						console.error(`estimateGas failed`, methodName, args, error)
 						return undefined
 					})
 			)
 		)
 
-		const indexOfSuccessfulEstimation = safeGasEstimates.findIndex(safeGasEstimate =>
+		const indexOfSuccessfulEstimation = safeGasEstimates.findIndex((safeGasEstimate) =>
 			BigNumber.isBigNumber(safeGasEstimate)
 		)
 
@@ -281,7 +282,7 @@ export default function RemoveLiquidity({
 
 			setAttemptingTxn(true)
 			await router[methodName](...args, {
-				gasLimit: safeGasEstimate
+				gasLimit: safeGasEstimate,
 			})
 				.then((response: TransactionResponse) => {
 					setAttemptingTxn(false)
@@ -295,7 +296,7 @@ export default function RemoveLiquidity({
 							' and ' +
 							parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
 							' ' +
-							currencyB?.symbol
+							currencyB?.symbol,
 					})
 
 					setTxHash(response.hash)
@@ -338,8 +339,9 @@ export default function RemoveLiquidity({
 				</RowBetween>
 
 				<TYPE.italic fontSize={12} color={theme.text2} textAlign="left" padding={'12px 0 0 0'}>
-					{`Output is estimated. If the price changes by more than ${allowedSlippage /
-						100}% your transaction will revert.`}
+					{`Output is estimated. If the price changes by more than ${
+						allowedSlippage / 100
+					}% your transaction will revert.`}
 				</TYPE.italic>
 			</AutoColumn>
 		)
@@ -350,7 +352,7 @@ export default function RemoveLiquidity({
 			<>
 				<RowBetween>
 					<Text color={theme.text2} fontWeight={500} fontSize={16}>
-						{'UNI ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+						{'PNDA ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
 					</Text>
 					<RowFixed>
 						<DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
@@ -395,6 +397,13 @@ export default function RemoveLiquidity({
 			onUserInput(Field.LIQUIDITY_PERCENT, value.toString())
 		},
 		[onUserInput]
+	)
+
+	const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
+	const oneCurrencyIsWETH = Boolean(
+		chainId &&
+			((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
+				(currencyB && currencyEquals(WETH[chainId], currencyB)))
 	)
 
 	const handleSelectCurrencyA = useCallback(
@@ -522,6 +531,27 @@ export default function RemoveLiquidity({
 												</Text>
 											</RowFixed>
 										</RowBetween>
+										{chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
+											<RowBetween style={{ justifyContent: 'flex-end' }}>
+												{oneCurrencyIsETH ? (
+													<StyledInternalLink
+														to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
+															currencyB === ETHER ? WETH[chainId].address : currencyIdB
+														}`}
+													>
+														Receive WXDAI
+													</StyledInternalLink>
+												) : oneCurrencyIsWETH ? (
+													<StyledInternalLink
+														to={`/remove/${
+															currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'ETH' : currencyIdA
+														}/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB}`}
+													>
+														Receive ETH
+													</StyledInternalLink>
+												) : null}
+											</RowBetween>
+										) : null}
 									</AutoColumn>
 								</LightCard>
 							</>
@@ -589,7 +619,7 @@ export default function RemoveLiquidity({
 						)}
 						<div style={{ position: 'relative' }}>
 							{!account ? (
-								<ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
+								<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
 							) : (
 								<RowBetween>
 									<ButtonConfirmed
@@ -625,6 +655,12 @@ export default function RemoveLiquidity({
 					</AutoColumn>
 				</Wrapper>
 			</AppBody>
+
+			{pair ? (
+				<AutoColumn style={{ minWidth: '20rem', marginTop: '1rem' }}>
+					<MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
+				</AutoColumn>
+			) : null}
 		</>
 	)
 }

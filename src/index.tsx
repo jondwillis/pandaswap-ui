@@ -3,6 +3,7 @@ import 'inter-ui'
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
+import { ChainId } from 'uniswap-bsc-sdk'
 import { NetworkContextName } from './constants'
 import './i18n'
 import App from './pages/App'
@@ -22,13 +23,15 @@ if ('ethereum' in window) {
 }
 
 function Updaters() {
+	const activeAppUpdater = ApplicationUpdater()
+	const activeTxnUpdater = TransactionUpdater()
 	return (
 		<>
 			<ListsUpdater />
 			<UserUpdater />
-			<ApplicationUpdater />
-			<TransactionUpdater />
-			<MulticallUpdater />
+			{activeAppUpdater}
+			{activeTxnUpdater}
+			<MulticallUpdater chainId={ChainId.XDAI} />
 		</>
 	)
 }

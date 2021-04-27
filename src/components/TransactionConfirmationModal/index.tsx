@@ -68,7 +68,7 @@ function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismiss: () 
 function TransactionSubmittedContent({
 	onDismiss,
 	chainId,
-	hash
+	hash,
 }: {
 	onDismiss: () => void
 	hash: string | undefined
@@ -94,7 +94,7 @@ function TransactionSubmittedContent({
 					{chainId && hash && (
 						<ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
 							<Text fontWeight={500} fontSize={14} color={theme.primary1}>
-								View on BSCScan
+								View on Blockscout
 							</Text>
 						</ExternalLink>
 					)}
@@ -113,7 +113,7 @@ export function ConfirmationModalContent({
 	title,
 	bottomContent,
 	onDismiss,
-	topContent
+	topContent,
 }: {
 	title: string
 	onDismiss: () => void
@@ -176,7 +176,7 @@ export default function TransactionConfirmationModal({
 	attemptingTxn,
 	hash,
 	pendingText,
-	content
+	content,
 }: ConfirmationModalProps) {
 	const { chainId } = useActiveWeb3React()
 

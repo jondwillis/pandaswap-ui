@@ -13,6 +13,7 @@ import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useTranslation } from 'react-i18next'
+import { AutoColumn } from '../Column'
 
 const InputRow = styled.div<{ selected: boolean }>`
 	${({ theme }) => theme.flexRowNoWrap}
@@ -85,9 +86,8 @@ const Container = styled.div<{ hideInput: boolean }>`
 `
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
-  ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '20px' : '16px')};
-
+	${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
+	font-size:  ${({ active }) => (active ? '20px' : '16px')};
 `
 
 const StyledBalanceMax = styled.button`
@@ -118,6 +118,7 @@ interface CurrencyInputPanelProps {
 	value: string
 	onUserInput: (value: string) => void
 	onMax?: () => void
+	onHalf?: () => void
 	showMaxButton: boolean
 	label?: string
 	onCurrencySelect?: (currency: Currency) => void
@@ -128,12 +129,14 @@ interface CurrencyInputPanelProps {
 	hideInput?: boolean
 	otherCurrency?: Currency | null
 	id: string
+	showCommonBases?: boolean
 }
 
 export default function CurrencyInputPanel({
 	value,
 	onUserInput,
 	onMax,
+	onHalf,
 	showMaxButton,
 	label = 'Input',
 	onCurrencySelect,
@@ -143,7 +146,8 @@ export default function CurrencyInputPanel({
 	pair = null, // used for double token logo
 	hideInput = false,
 	otherCurrency,
-	id
+	id,
+	showCommonBases,
 }: CurrencyInputPanelProps) {
 	const { t } = useTranslation()
 
@@ -187,12 +191,15 @@ export default function CurrencyInputPanel({
 							<NumericalInput
 								className="token-amount-input"
 								value={value}
-								onUserInput={val => {
+								onUserInput={(val) => {
 									onUserInput(val)
 								}}
 							/>
 							{account && currency && showMaxButton && label !== 'To' && (
-								<StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
+								<AutoColumn gap="4pt">
+									<StyledBalanceMax onClick={onHalf}>1/2</StyledBalanceMax>
+									<StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
+								</AutoColumn>
 							)}
 						</>
 					)}
@@ -236,6 +243,7 @@ export default function CurrencyInputPanel({
 					onCurrencySelect={onCurrencySelect}
 					selectedCurrency={currency}
 					otherSelectedCurrency={otherCurrency}
+					showCommonBases={showCommonBases}
 				/>
 			)}
 		</InputPanel>

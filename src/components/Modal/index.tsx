@@ -29,7 +29,7 @@ const AnimatedDialogContent = animated(DialogContent)
 const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
 	<AnimatedDialogContent {...rest} />
 )).attrs({
-	'aria-label': 'dialog'
+	'aria-label': 'dialog',
 })`
 	&[data-reach-dialog-content] {
 		margin: 0 0 2rem 0;
@@ -61,13 +61,15 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     `}
 		${({ theme, mobile }) => theme.mediaWidth.upToSmall`
       width:  85vw;
-      ${mobile &&
+      ${
+				mobile &&
 				css`
 					width: 100vw;
 					border-radius: 12px;
 					border-bottom-left-radius: 0;
 					border-bottom-right-radius: 0;
-				`}
+				`
+			}
     `}
 	}
 `
@@ -87,25 +89,25 @@ export default function Modal({
 	minHeight = false,
 	maxHeight = 50,
 	initialFocusRef,
-	children
+	children,
 }: ModalProps) {
 	const fadeTransition = useTransition(isOpen, null, {
 		config: { duration: 200 },
 		from: { opacity: 0 },
 		enter: { opacity: 1 },
-		leave: { opacity: 0 }
+		leave: { opacity: 0 },
 	})
 
 	const [{ y }, set] = useSpring(() => ({ y: 0, config: { mass: 1, tension: 210, friction: 20 } }))
 	const bind = useGesture({
-		onDrag: state => {
+		onDrag: (state) => {
 			set({
-				y: state.down ? state.movement[1] : 0
+				y: state.down ? state.movement[1] : 0,
 			})
 			if (state.movement[1] > 300 || (state.velocity > 3 && state.direction[1] > 0)) {
 				onDismiss()
 			}
-		}
+		},
 	})
 
 	return (
@@ -118,7 +120,7 @@ export default function Modal({
 								{...(isMobile
 									? {
 											...bind(),
-											style: { transform: y.interpolate(y => `translateY(${y > 0 ? y : 0}px)`) }
+											style: { transform: y.interpolate((y) => `translateY(${y > 0 ? y : 0}px)`) },
 									  }
 									: {})}
 								aria-label="dialog content"

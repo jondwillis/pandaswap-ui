@@ -6,7 +6,7 @@ import {
 	useUserSlippageTolerance,
 	useExpertModeManager,
 	useUserDeadline,
-	useDarkModeManager
+	useDarkModeManager,
 } from '../../state/user/hooks'
 import TransactionSettings from '../TransactionSettings'
 import { RowFixed, RowBetween } from '../Row'
@@ -118,7 +118,7 @@ const ModalContentWrapper = styled.div`
 	justify-content: center;
 	padding: 2rem 0;
 	background-color: ${({ theme }) => theme.bg2};
-	border-radius: 12px;
+	border-radius: 20px;
 `
 
 export default function SettingsTab() {

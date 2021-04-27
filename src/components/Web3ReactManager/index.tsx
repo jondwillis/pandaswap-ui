@@ -7,6 +7,8 @@ import { network } from '../../connectors'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
 import { NetworkContextName } from '../../constants'
 import Loader from '../Loader'
+import { ButtonPrimary } from '../Button'
+import { useWalletModalToggle } from '../../state/application/hooks'
 
 const MessageWrapper = styled.div`
 	display: flex;
@@ -26,6 +28,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
 
 	// try to eagerly connect to an injected provider, if it exists and has granted access already
 	const triedEager = useEagerConnect()
+	const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
 
 	// after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
 	useEffect(() => {
@@ -59,6 +62,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
 		return (
 			<MessageWrapper>
 				<Message>{t('unknownError')}</Message>
+				<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
 			</MessageWrapper>
 		)
 	}
@@ -68,6 +72,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
 		return showLoader ? (
 			<MessageWrapper>
 				<Loader />
+				<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
 			</MessageWrapper>
 		) : null
 	}

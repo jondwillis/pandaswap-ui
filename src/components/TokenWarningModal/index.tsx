@@ -16,7 +16,7 @@ import { ButtonError } from '../Button'
 const Wrapper = styled.div<{ error: boolean }>`
 	background: ${({ theme }) => transparentize(0.6, theme.bg3)};
 	padding: 0.75rem;
-	border-radius: 12px;
+	border-radius: 20px;
 `
 
 const WarningContainer = styled.div`
@@ -25,7 +25,7 @@ const WarningContainer = styled.div`
 	padding: 1rem;
 	background: rgba(242, 150, 2, 0.05);
 	border: 1px solid #f3841e;
-	border-radius: 12px;
+	border-radius: 20px;
 	overflow: auto;
 `
 
@@ -48,7 +48,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
 	const duplicateNameOrSymbol = useMemo(() => {
 		if (!token || !chainId) return false
 
-		return Object.keys(allTokens).some(tokenAddress => {
+		return Object.keys(allTokens).some((tokenAddress) => {
 			const userToken = allTokens[tokenAddress]
 			if (userToken.equals(token)) {
 				return false
@@ -74,7 +74,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
 					</TYPE.main>
 					{chainId && (
 						<ExternalLink style={{ fontWeight: 400 }} href={getEtherscanLink(chainId, token.address, 'token')}>
-							<TYPE.blue title={token.address}>{shortenAddress(token.address)} (View on BSCScan)</TYPE.blue>
+							<TYPE.blue title={token.address}>{shortenAddress(token.address)} (View on Blockscout)</TYPE.blue>
 						</ExternalLink>
 					)}
 				</AutoColumn>
@@ -86,14 +86,14 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
 export default function TokenWarningModal({
 	isOpen,
 	tokens,
-	onConfirm
+	onConfirm,
 }: {
 	isOpen: boolean
 	tokens: Token[]
 	onConfirm: () => void
 }) {
 	const [understandChecked, setUnderstandChecked] = useState(false)
-	const toggleUnderstand = useCallback(() => setUnderstandChecked(uc => !uc), [])
+	const toggleUnderstand = useCallback(() => setUnderstandChecked((uc) => !uc), [])
 
 	const handleDismiss = useCallback(() => null, [])
 	return (
@@ -115,7 +115,7 @@ export default function TokenWarningModal({
 					<TYPE.body color={'red2'}>
 						If you purchase an arbitrary token, <strong>you may be unable to sell it back.</strong>
 					</TYPE.body>
-					{tokens.map(token => {
+					{tokens.map((token) => {
 						return <TokenWarningCard key={token.address} token={token} />
 					})}
 					<RowBetween>
@@ -137,7 +137,7 @@ export default function TokenWarningModal({
 							padding="0.5rem 1rem"
 							className="token-dismiss-button"
 							style={{
-								borderRadius: '10px'
+								borderRadius: '10px',
 							}}
 							onClick={() => {
 								onConfirm()

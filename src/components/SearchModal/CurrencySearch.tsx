@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
+import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
 import { CloseIcon, LinkStyledButton, TYPE } from '../../theme'
@@ -13,6 +14,7 @@ import Column from '../Column'
 import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
+import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
 import { filterTokens } from './filtering'
 import SortButton from './SortButton'
@@ -26,6 +28,7 @@ interface CurrencySearchProps {
 	selectedCurrency?: Currency | null
 	onCurrencySelect: (currency: Currency) => void
 	otherSelectedCurrency?: Currency | null
+	showCommonBases?: boolean
 	onChangeList: () => void
 }
 
@@ -33,11 +36,13 @@ export function CurrencySearch({
 	selectedCurrency,
 	onCurrencySelect,
 	otherSelectedCurrency,
+	showCommonBases,
 	onDismiss,
 	isOpen,
-	onChangeList
+	onChangeList,
 }: CurrencySearchProps) {
 	const { t } = useTranslation()
+	const { chainId } = useActiveWeb3React()
 	const theme = useContext(ThemeContext)
 
 	const fixedList = useRef<FixedSizeList>()
@@ -67,14 +72,14 @@ export function CurrencySearch({
 		const symbolMatch = searchQuery
 			.toLowerCase()
 			.split(/\s+/)
-			.filter(s => s.length > 0)
+			.filter((s) => s.length > 0)
 		if (symbolMatch.length > 1) return sorted
 
 		return [
 			...(searchToken ? [searchToken] : []),
 			// sort any exact symbol matches first
-			...sorted.filter(token => token.symbol?.toLowerCase() === symbolMatch[0]),
-			...sorted.filter(token => token.symbol?.toLowerCase() !== symbolMatch[0])
+			...sorted.filter((token) => token.symbol?.toLowerCase() === symbolMatch[0]),
+			...sorted.filter((token) => token.symbol?.toLowerCase() !== symbolMatch[0]),
 		]
 	}, [filteredTokens, searchQuery, searchToken, tokenComparator])
 
@@ -93,7 +98,7 @@ export function CurrencySearch({
 
 	// manage focus on modal show
 	const inputRef = useRef<HTMLInputElement>()
-	const handleInput = useCallback(event => {
+	const handleInput = useCallback((event) => {
 		const input = event.target.value
 		const checksummedInput = isAddress(input)
 		setSearchQuery(checksummedInput || input)
@@ -126,7 +131,7 @@ export function CurrencySearch({
 			<PaddedColumn gap="14px">
 				<RowBetween>
 					<Text fontWeight={500} fontSize={16}>
-						Select a token
+						{t('selectToken')}
 						<QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." />
 					</Text>
 					<CloseIcon onClick={onDismiss} />
@@ -140,11 +145,14 @@ export function CurrencySearch({
 					onChange={handleInput}
 					onKeyDown={handleEnter}
 				/>
+				{showCommonBases && (
+					<CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
+				)}
 				<RowBetween>
 					<Text fontSize={14} fontWeight={500}>
 						Token Name
 					</Text>
-					<SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
+					<SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder((iso) => !iso)} />
 				</RowBetween>
 			</PaddedColumn>
 

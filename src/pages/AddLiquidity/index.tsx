@@ -6,7 +6,7 @@ import { Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import { ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
+import { ButtonError, ButtonPrimary } from '../../components/Button'
 import { BlueCard, GreyCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
@@ -28,7 +28,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../theme'
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
+import { /*calculateGasMargin,*/ calculateSlippageAmount, getRouterContract } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
@@ -39,9 +39,9 @@ import { PoolPriceBar } from './PoolPriceBar'
 
 export default function AddLiquidity({
 	match: {
-		params: { currencyIdA, currencyIdB }
+		params: { currencyIdA, currencyIdB },
 	},
-	history
+	history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
 	const { account, chainId, library } = useActiveWeb3React()
 	const theme = useContext(ThemeContext)
@@ -72,7 +72,7 @@ export default function AddLiquidity({
 		noLiquidity,
 		liquidityMinted,
 		poolTokenPercentage,
-		error
+		error,
 	} = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
 	const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
@@ -90,7 +90,7 @@ export default function AddLiquidity({
 	// get formatted amounts
 	const formattedAmounts = {
 		[independentField]: typedValue,
-		[dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+		[dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
 	}
 
 	// get the max amounts user can add
@@ -98,7 +98,7 @@ export default function AddLiquidity({
 		(accumulator, field) => {
 			return {
 				...accumulator,
-				[field]: maxAmountSpend(currencyBalances[field])
+				[field]: maxAmountSpend(currencyBalances[field]),
 			}
 		},
 		{}
@@ -108,7 +108,7 @@ export default function AddLiquidity({
 		(accumulator, field) => {
 			return {
 				...accumulator,
-				[field]: maxAmounts[field]?.equalTo(parsedAmounts[field] ?? '0')
+				[field]: maxAmounts[field]?.equalTo(parsedAmounts[field] ?? '0'),
 			}
 		},
 		{}
@@ -123,6 +123,7 @@ export default function AddLiquidity({
 	async function onAdd() {
 		if (!chainId || !library || !account) return
 		const router = getRouterContract(chainId, library, account)
+		console.log('Router Address', router)
 
 		const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
 		if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
@@ -131,30 +132,29 @@ export default function AddLiquidity({
 
 		const amountsMin = {
 			[Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
-			[Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0]
+			[Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
 		}
 
 		const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
-		let estimate
-		let method: (...args: any) => Promise<TransactionResponse>
-		let args: Array<string | string[] | number>
-		let value: BigNumber | null
+		let method: (...args: any) => Promise<TransactionResponse>,
+			args: Array<string | string[] | number>,
+			value: BigNumber | null
 		if (currencyA === ETHER || currencyB === ETHER) {
-			const tokenBIsBNB = currencyB === ETHER
-			estimate = router.estimateGas.addLiquidityETH
+			const tokenBIsETH = currencyB === ETHER
+			// estimate = router.estimateGas.addLiquidityETH
 			method = router.addLiquidityETH
 			args = [
-				wrappedCurrency(tokenBIsBNB ? currencyA : currencyB, chainId)?.address ?? '', // token
-				(tokenBIsBNB ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-				amountsMin[tokenBIsBNB ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-				amountsMin[tokenBIsBNB ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+				wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+				(tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+				amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+				amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
 				account,
-				deadlineFromNow
+				deadlineFromNow,
 			]
-			value = BigNumber.from((tokenBIsBNB ? parsedAmountB : parsedAmountA).raw.toString())
+			value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
 		} else {
-			estimate = router.estimateGas.addLiquidity
+			// estimate = router.estimateGas.addLiquidity
 			method = router.addLiquidity
 			args = [
 				wrappedCurrency(currencyA, chainId)?.address ?? '',
@@ -164,21 +164,18 @@ export default function AddLiquidity({
 				amountsMin[Field.CURRENCY_A].toString(),
 				amountsMin[Field.CURRENCY_B].toString(),
 				account,
-				deadlineFromNow
+				deadlineFromNow,
 			]
 			value = null
 		}
 
 		setAttemptingTxn(true)
 
-		estimate(...args, value ? { value } : {})
-			.then(estimatedGasLimit =>
-				method(...args, {
-					...(value ? { value } : {}),
-					gasLimit: calculateGasMargin(estimatedGasLimit)
-				})
-			)
-			.then(response => {
+		method(...args, {
+			...(value ? { value } : {}),
+			gasLimit: 1000000,
+		})
+			.then((response) => {
 				setAttemptingTxn(false)
 
 				addTransaction(response, {
@@ -190,12 +187,12 @@ export default function AddLiquidity({
 						' and ' +
 						parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
 						' ' +
-						currencies[Field.CURRENCY_B]?.symbol
+						currencies[Field.CURRENCY_B]?.symbol,
 				})
 
 				setTxHash(response.hash)
 			})
-			.catch(error => {
+			.catch((error) => {
 				setAttemptingTxn(false)
 				// we only care if the error is something _other_ than the user rejected the tx
 				if (error?.code !== 4001) {
@@ -238,8 +235,9 @@ export default function AddLiquidity({
 					</Text>
 				</Row>
 				<TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
-					{`Output is estimated. If the price changes by more than ${allowedSlippage /
-						100}% your transaction will revert.`}
+					{`Output is estimated. If the price changes by more than ${
+						allowedSlippage / 100
+					}% your transaction will revert.`}
 				</TYPE.italic>
 			</AutoColumn>
 		)
@@ -283,7 +281,7 @@ export default function AddLiquidity({
 					history.push(`/add/${newCurrencyIdB}`)
 				}
 			} else {
-				history.push(`/add/${currencyIdA ? currencyIdA : 'BNB'}/${newCurrencyIdB}`)
+				history.push(`/add/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
 			}
 		},
 		[currencyIdA, history, currencyIdB]
@@ -346,6 +344,7 @@ export default function AddLiquidity({
 							showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
 							currency={currencies[Field.CURRENCY_A]}
 							id="add-liquidity-input-tokena"
+							showCommonBases
 						/>
 						<ColumnCenter>
 							<Plus size="16" color={theme.text2} />
@@ -360,6 +359,7 @@ export default function AddLiquidity({
 							showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
 							currency={currencies[Field.CURRENCY_B]}
 							id="add-liquidity-input-tokenb"
+							showCommonBases
 						/>
 						{currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
 							<>
@@ -382,7 +382,7 @@ export default function AddLiquidity({
 						)}
 
 						{!account ? (
-							<ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
+							<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
 						) : (
 							<AutoColumn gap={'md'}>
 								{(approvalA === ApprovalState.NOT_APPROVED ||

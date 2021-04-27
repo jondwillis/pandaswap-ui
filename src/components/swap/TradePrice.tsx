@@ -19,7 +19,7 @@ export default function TradePrice({
 	inputCurrency,
 	outputCurrency,
 	showInverted,
-	setShowInverted
+	setShowInverted,
 }: TradePriceProps) {
 	const theme = useContext(ThemeContext)
 

@@ -1,10 +1,10 @@
-import { JSBI, Pair, Percent } from 'uniswap-bsc-sdk'
+import { JSBI, Pair, Percent, TokenAmount } from 'uniswap-bsc-sdk'
 import { darken } from 'polished'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { Text } from 'rebass'
-import styled from 'styled-components'
+import styled, { ThemeContext } from 'styled-components'
 import { useTotalSupply } from '../../data/TotalSupply'
 
 import { useActiveWeb3React } from '../../hooks'
@@ -20,20 +20,32 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import { Dots } from '../swap/styleds'
+import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
+import { useStake } from '../../hooks/Farm'
+import { useMasterChefContract } from '../../hooks/useContract'
+import { useSupportedLpTokenMap } from '../../constants/bao'
+import { getEtherscanLink } from '../../utils'
 
 export const FixedHeightRow = styled(RowBetween)`
 	height: 24px;
 `
 
 export const HoverCard = styled(Card)`
-	border: 1px solid ${({ theme }) => theme.bg2};
+	border: 1px solid ${({ theme }) => darken(0.06, theme.bg2)};
 	:hover {
-		border: 1px solid ${({ theme }) => darken(0.06, theme.bg2)};
+		border: 1px solid ${({ theme }) => darken(0.12, theme.bg2)};
 	}
+`
+
+export const BalanceText = styled(Text)`
+	${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    flex-shrink: 0;
+  `};
 `
 
 interface PositionCardProps {
 	pair: Pair
+	unstakedLPAmount?: TokenAmount | undefined | null
 	showUnwrapped?: boolean
 	border?: string
 }
@@ -57,7 +69,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
 		JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
 			? [
 					pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-					pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false)
+					pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
 			  ]
 			: [undefined, undefined]
 
@@ -123,8 +135,9 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
 	)
 }
 
-export default function FullPositionCard({ pair, border }: PositionCardProps) {
-	const { account } = useActiveWeb3React()
+export default function FullPositionCard({ pair, unstakedLPAmount, border }: PositionCardProps) {
+	const theme = useContext(ThemeContext)
+	const { account, chainId } = useActiveWeb3React()
 
 	const currency0 = unwrappedToken(pair.token0)
 	const currency1 = unwrappedToken(pair.token1)
@@ -147,9 +160,25 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 		JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
 			? [
 					pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-					pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false)
+					pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
 			  ]
 			: [undefined, undefined]
+
+	const supportedLpTokenMap = useSupportedLpTokenMap()
+	const farmablePool = supportedLpTokenMap.get(pair.liquidityToken.address)
+
+	const [stakeApproval, stakeApproveCallback] = useApproveCallback(
+		unstakedLPAmount || undefined,
+		useMasterChefContract()?.address
+	)
+
+	const { callback: stakeCallback } = useStake(farmablePool, unstakedLPAmount)
+	const handleStake = useCallback(() => {
+		if (!stakeCallback) {
+			return
+		}
+		stakeApproveCallback().then(() => stakeCallback())
+	}, [stakeCallback, stakeApproveCallback])
 
 	return (
 		<HoverCard border={border}>
@@ -162,6 +191,27 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 						</Text>
 					</RowFixed>
 					<RowFixed>
+						{farmablePool ? (
+							<ButtonSecondary
+								onClick={() => handleStake()}
+								disabled={!(unstakedLPAmount && unstakedLPAmount.greaterThan('0'))}
+								padding="0.5rem"
+								style={{ fontWeight: 800, backgroundColor: theme.primary3, padding: '0.2rem' }}
+							>
+								{stakeApproval === ApprovalState.PENDING ? (
+									<Dots>Approving</Dots>
+								) : stakeApproval === ApprovalState.NOT_APPROVED ? (
+									<AutoColumn>
+										<Text>+Stake All</Text>
+										<Text style={{ fontSize: 10, fontWeight: 700 }}>(needs approval)</Text>
+									</AutoColumn>
+								) : (
+									'+Stake All'
+								)}
+							</ButtonSecondary>
+						) : (
+							<></>
+						)}
 						{showMore ? (
 							<ChevronUp size="20" style={{ marginLeft: '10px' }} />
 						) : (
@@ -224,9 +274,11 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
 						</FixedHeightRow>
 
 						<AutoRow justify="center" marginTop={'10px'}>
-							<ExternalLink href={`https://info.pandaswap.xyz/pair/${pair.liquidityToken.address}`}>
-								View pool information ↗
-							</ExternalLink>
+							{chainId && (
+								<ExternalLink href={getEtherscanLink(chainId, pair.liquidityToken.address, 'address')}>
+									View Liquidity Pool Contract ↗
+								</ExternalLink>
+							)}
 						</AutoRow>
 						<RowBetween marginTop="10px">
 							<ButtonSecondary as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} width="48%">

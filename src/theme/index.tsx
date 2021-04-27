@@ -4,7 +4,7 @@ import styled, {
 	ThemeProvider as StyledComponentsThemeProvider,
 	createGlobalStyle,
 	css,
-	DefaultTheme
+	DefaultTheme,
 } from 'styled-components'
 import { useIsDarkMode } from '../state/user/hooks'
 import { Text, TextProps } from 'rebass'
@@ -18,7 +18,14 @@ const MEDIA_WIDTHS = {
 	upToExtraSmall: 500,
 	upToSmall: 600,
 	upToMedium: 960,
-	upToLarge: 1280
+	upToLarge: 1280,
+}
+
+const MEDIA_MIN_WIDTHS = {
+	downToExtraSmall: 500,
+	downToSmall: 600,
+	downToMedium: 960,
+	downToLarge: 1280,
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
@@ -32,6 +39,17 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 	},
 	{}
 ) as any
+
+const mediaMinWidthTemplates: { [width in keyof typeof MEDIA_MIN_WIDTHS]: typeof css } = Object.keys(
+	MEDIA_MIN_WIDTHS
+).reduce((accumulator, size) => {
+	;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+		@media (min-width: ${(MEDIA_MIN_WIDTHS as any)[size]}px) {
+			${css(a, b, c)}
+		}
+	`
+	return accumulator
+}, {}) as any
 
 const white = '#FFFFFF'
 const black = '#000000'
@@ -89,7 +107,7 @@ export function colors(darkMode: boolean): Colors {
 		red2: '#F82D3A',
 		green1: '#27AE60',
 		yellow1: '#FFE270',
-		yellow2: '#1c3629'
+		yellow2: '#1c3629',
 
 		// dont wanna forget these blue yet
 		// blue4: darkMode ? '#153d6f70' : '#C4D9F8',
@@ -104,7 +122,7 @@ export function theme(darkMode: boolean): DefaultTheme {
 		grids: {
 			sm: 8,
 			md: 12,
-			lg: 24
+			lg: 24,
 		},
 
 		//shadows
@@ -112,6 +130,7 @@ export function theme(darkMode: boolean): DefaultTheme {
 
 		// media queries
 		mediaWidth: mediaWidthTemplates,
+		mediaMinWidth: mediaMinWidthTemplates,
 
 		// css snippets
 		flexColumnNoWrap: css`
@@ -121,7 +140,7 @@ export function theme(darkMode: boolean): DefaultTheme {
 		flexRowNoWrap: css`
 			display: flex;
 			flex-flow: row nowrap;
-		`
+		`,
 	}
 }
 
@@ -176,7 +195,7 @@ export const TYPE = {
 	},
 	error({ error, ...props }: { error: boolean } & TextProps) {
 		return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
-	}
+	},
 }
 
 export const FixedGlobalStyle = createGlobalStyle`

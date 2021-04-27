@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import AddressInputPanel from '../../components/AddressInputPanel'
-import { ButtonError, ButtonImagePlus, ButtonLight, ButtonPrimary } from '../../components/Button'
+import { ButtonError, ButtonImagePlus, ButtonPrimary } from '../../components/Button'
 import Card, { GreyCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -13,19 +13,16 @@ import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import { SwapPoolTabs } from '../../components/NavigationTabs'
 import { AutoRow, RowBetween } from '../../components/Row'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
-import BetterTradeLink from '../../components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, Dots, SwapCallbackError, Wrapper } from '../../components/swap/styleds'
 import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
 
-import { BETTER_TRADE_LINK_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE, PNDA } from '../../constants'
-import { isTradeBetter } from '../../data/V1'
+import { INITIAL_ALLOWED_SLIPPAGE, PNDA, SUGGESTED_BASES } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
-import useToggledVersion, { Version } from '../../hooks/useToggledVersion'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
@@ -33,7 +30,7 @@ import {
 	useDefaultsFromURLSearch,
 	useDerivedSwapInfo,
 	useSwapActionHandlers,
-	useSwapState
+	useSwapState,
 } from '../../state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { LinkStyledButton, TYPE } from '../../theme'
@@ -42,6 +39,8 @@ import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import { ClickableText } from '../Pool/styleds'
 import { addTokenToMetamask } from '../../utils/addTokenToMetamask'
+import { PoolBody } from '../Pool'
+import { usePoolProps } from '../../hooks/Pool'
 
 export default function Swap() {
 	const loadedUrlParams = useDefaultsFromURLSearch()
@@ -49,11 +48,14 @@ export default function Swap() {
 	// token warning stuff
 	const [loadedInputCurrency, loadedOutputCurrency] = [
 		useCurrency(loadedUrlParams?.inputCurrencyId),
-		useCurrency(loadedUrlParams?.outputCurrencyId)
+		useCurrency(loadedUrlParams?.outputCurrencyId),
 	]
 	const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
 	const urlLoadedTokens: Token[] = useMemo(
-		() => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c instanceof Token) ?? [],
+		() =>
+			[loadedInputCurrency, loadedOutputCurrency]?.filter(
+				(c): c is Token => c instanceof Token && !SUGGESTED_BASES[56].map((t) => t.address).includes(c.address)
+			) ?? [],
 		[loadedInputCurrency, loadedOutputCurrency]
 	)
 	const handleConfirmTokenWarning = useCallback(() => {
@@ -76,43 +78,23 @@ export default function Swap() {
 
 	// swap state
 	const { independentField, typedValue, recipient } = useSwapState()
-	const {
-		v1Trade,
-		v2Trade,
-		currencyBalances,
-		parsedAmount,
-		currencies,
-		inputError: swapInputError
-	} = useDerivedSwapInfo()
+	const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
 	const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
 		currencies[Field.INPUT],
 		currencies[Field.OUTPUT],
 		typedValue
 	)
 	const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-	const toggledVersion = useToggledVersion()
-	const trade = showWrap
-		? undefined
-		: {
-				[Version.v1]: v1Trade,
-				[Version.v2]: v2Trade
-		  }[toggledVersion]
-
-	const betterTradeLinkVersion: Version | undefined =
-		toggledVersion === Version.v2 && isTradeBetter(v2Trade, v1Trade, BETTER_TRADE_LINK_THRESHOLD)
-			? Version.v1
-			: toggledVersion === Version.v1 && isTradeBetter(v1Trade, v2Trade)
-			? Version.v2
-			: undefined
+	const trade = v2Trade ?? undefined
 
 	const parsedAmounts = showWrap
 		? {
 				[Field.INPUT]: parsedAmount,
-				[Field.OUTPUT]: parsedAmount
+				[Field.OUTPUT]: parsedAmount,
 		  }
 		: {
 				[Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-				[Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
+				[Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
 		  }
 
 	const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
@@ -144,14 +126,14 @@ export default function Swap() {
 		tradeToConfirm: undefined,
 		attemptingTxn: false,
 		swapErrorMessage: undefined,
-		txHash: undefined
+		txHash: undefined,
 	})
 
 	const formattedAmounts = {
 		[independentField]: typedValue,
 		[dependentField]: showWrap
 			? parsedAmounts[independentField]?.toExact() ?? ''
-			: parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+			: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
 	}
 
 	const route = trade?.route
@@ -174,6 +156,9 @@ export default function Swap() {
 	}, [approval, approvalSubmitted])
 
 	const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
+	const halfAmountInput: CurrencyAmount | undefined = CurrencyAmount.ether(
+		JSBI.divide(currencyBalances[Field.INPUT]?.raw || JSBI.BigInt(0), JSBI.BigInt(2)).toString()
+	)
 	const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
 	// the callback to execute the swap
@@ -195,16 +180,16 @@ export default function Swap() {
 		}
 		setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
 		swapCallback()
-			.then(hash => {
+			.then((hash) => {
 				setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
 			})
-			.catch(error => {
+			.catch((error) => {
 				setSwapState({
 					attemptingTxn: false,
 					tradeToConfirm,
 					showConfirm,
 					swapErrorMessage: error.message,
-					txHash: undefined
+					txHash: undefined,
 				})
 			})
 	}, [tradeToConfirm, priceImpactWithoutFee, showConfirm, swapCallback])
@@ -237,7 +222,7 @@ export default function Swap() {
 	}, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
 
 	const handleInputSelect = useCallback(
-		inputCurrency => {
+		(inputCurrency) => {
 			setApprovalSubmitted(false) // reset 2 step UI for approvals
 			onCurrencySelection(Field.INPUT, inputCurrency)
 		},
@@ -248,13 +233,17 @@ export default function Swap() {
 		maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
 	}, [maxAmountInput, onUserInput])
 
-	const handleOutputSelect = useCallback(outputCurrency => onCurrencySelection(Field.OUTPUT, outputCurrency), [
-		onCurrencySelection
+	const handleHalfInput = useCallback(() => {
+		halfAmountInput && onUserInput(Field.INPUT, halfAmountInput.toExact())
+	}, [halfAmountInput, onUserInput])
+
+	const handleOutputSelect = useCallback((outputCurrency) => onCurrencySelection(Field.OUTPUT, outputCurrency), [
+		onCurrencySelection,
 	])
 
 	const { ethereum } = window
-	const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [])
-	const isPndaSelected =
+	const handleAddBaocxToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [ethereum])
+	const isBaocxSelected =
 		currencies[Field.INPUT]?.symbol === PNDA.symbol || currencies[Field.OUTPUT]?.symbol === PNDA.symbol
 
 	return (
@@ -264,18 +253,18 @@ export default function Swap() {
 				tokens={urlLoadedTokens}
 				onConfirm={handleConfirmTokenWarning}
 			/>
-			{isPndaSelected && (
+			{isBaocxSelected && (
 				<ButtonImagePlus
-					onClick={() => handleAddPndaToMM()}
+					onClick={() => handleAddBaocxToMM()}
 					style={{
 						width: 'auto',
 						position: 'absolute',
 						marginTop: '-20px',
 						marginRight: isMobile ? '' : '-200px',
-						whiteSpace: 'nowrap'
+						whiteSpace: 'nowrap',
 					}}
 				>
-					Add PNDA to MetaMask
+					Add {PNDA.symbol} to MetaMask
 				</ButtonImagePlus>
 			)}
 			<AppBody>
@@ -303,6 +292,7 @@ export default function Swap() {
 							currency={currencies[Field.INPUT]}
 							onUserInput={handleTypeInput}
 							onMax={handleMaxInput}
+							onHalf={handleHalfInput}
 							onCurrencySelect={handleInputSelect}
 							otherCurrency={currencies[Field.OUTPUT]}
 							id="swap-currency-input"
@@ -384,7 +374,7 @@ export default function Swap() {
 					</AutoColumn>
 					<BottomGrouping>
 						{!account ? (
-							<ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
+							<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
 						) : showWrap ? (
 							<ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
 								{wrapInputError ??
@@ -420,7 +410,7 @@ export default function Swap() {
 												attemptingTxn: false,
 												swapErrorMessage: undefined,
 												showConfirm: true,
-												txHash: undefined
+												txHash: undefined,
 											})
 										}
 									}}
@@ -449,7 +439,7 @@ export default function Swap() {
 											attemptingTxn: false,
 											swapErrorMessage: undefined,
 											showConfirm: true,
-											txHash: undefined
+											txHash: undefined,
 										})
 									}
 								}}
@@ -467,11 +457,14 @@ export default function Swap() {
 							</ButtonError>
 						)}
 						{isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
-						{betterTradeLinkVersion && <BetterTradeLink version={betterTradeLinkVersion} />}
 					</BottomGrouping>
 				</Wrapper>
 			</AppBody>
 			<AdvancedSwapDetailsDropdown trade={trade} />
+			<div style={{ marginBottom: '10px' }} />
+			<AppBody>
+				<PoolBody {...usePoolProps()} />
+			</AppBody>
 		</>
 	)
 }

@@ -36,7 +36,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.ROPSTEN]: {},
   [ChainId.GÖRLI]: {},
   [ChainId.MAINNET]: {},
-  [ChainId.XDAI]: {}
+  [ChainId.XDAI]: {},
 }
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =
@@ -50,7 +50,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
     (tokenMap, tokenInfo) => {
       const tags: TagInfo[] =
         tokenInfo.tags
-          ?.map(tagId => {
+          ?.map((tagId) => {
             if (!list.tags?.[tagId]) return undefined
             return { ...list.tags[tagId], id: tagId }
           })
@@ -61,8 +61,8 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
         ...tokenMap,
         [token.chainId]: {
           ...tokenMap[token.chainId],
-          [token.address]: token
-        }
+          [token.address]: token,
+        },
       }
     },
     { ...EMPTY_LIST }
@@ -72,7 +72,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
 }
 
 export function useTokenList(url: string | undefined): TokenAddressMap {
-  const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+  const lists = useSelector<AppState, AppState['lists']['byUrl']>((state) => state.lists.byUrl)
   return useMemo(() => {
     if (!url) return EMPTY_LIST
     const current = lists[url]?.current
@@ -87,7 +87,7 @@ export function useTokenList(url: string | undefined): TokenAddressMap {
 }
 
 export function useSelectedListUrl(): string | undefined {
-  return useSelector<AppState, AppState['lists']['selectedListUrl']>(state => state.lists.selectedListUrl)
+  return useSelector<AppState, AppState['lists']['selectedListUrl']>((state) => state.lists.selectedListUrl)
 }
 
 export function useSelectedTokenList(): TokenAddressMap {
@@ -96,23 +96,23 @@ export function useSelectedTokenList(): TokenAddressMap {
 
 export function useSelectedListInfo(): { current: TokenList | null; pending: TokenList | null; loading: boolean } {
   const selectedUrl = useSelectedListUrl()
-  const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+  const listsByUrl = useSelector<AppState, AppState['lists']['byUrl']>((state) => state.lists.byUrl)
   const list = selectedUrl ? listsByUrl[selectedUrl] : undefined
   return {
     current: list?.current ?? null,
     pending: list?.pendingUpdate ?? null,
-    loading: list?.loadingRequestId !== null
+    loading: list?.loadingRequestId !== null,
   }
 }
 
 // returns all downloaded current lists
 export function useAllLists(): TokenList[] {
-  const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
+  const lists = useSelector<AppState, AppState['lists']['byUrl']>((state) => state.lists.byUrl)
 
   return useMemo(
     () =>
       Object.keys(lists)
-        .map(url => lists[url].current)
+        .map((url) => lists[url].current)
         .filter((l): l is TokenList => Boolean(l)),
     [lists]
   )
