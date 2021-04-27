@@ -207,19 +207,19 @@ export default function Header() {
 								</BalanceText>
 							) : null}
 							<Web3Status />
-							<TestnetWrapper>
-								<StyledTradeLink
-									style={{
-										background: `linear-gradient(128.17deg, #337855 -14.78%, #4ab684 110.05%)`,
-										color: 'white'
-									}}
-									target="_blank"
-									href="https://farms.pandaswap.xyz/"
-								>
-									Farms
-								</StyledTradeLink>
-							</TestnetWrapper>
 						</AccountElement>
+						<TestnetWrapper>
+							<StyledTradeLink
+								style={{
+									background: `linear-gradient(128.17deg, #337855 -14.78%, #4ab684 110.05%)`,
+									color: 'white'
+								}}
+								target="_blank"
+								href="https://farms.pandaswap.xyz/"
+							>
+								Farms
+							</StyledTradeLink>
+						</TestnetWrapper>
 					</HeaderElement>
 					<HeaderElementWrap>
 						{/* <VersionSwitch />*/}

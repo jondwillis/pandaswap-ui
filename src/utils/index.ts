@@ -29,7 +29,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
 export function getEtherscanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
   let prefix
   if (chainId === 56) {
-    prefix = 'https://bscscan.com/'
+    prefix = 'https://bscscan.com'
   } else {
     prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
   }
