@@ -95,7 +95,7 @@ export const addressMap = {
   UNFI: '0x728c5bac3c3e370e372fc4671f9ef6916b814d8b',
   BUX: '0x211ffbe424b90e25a15531ca322adf1559779e45',
   MDS: '0x242e46490397acca94ed930f2c4edf16250237fa',
-  HGET: '0x794f976c12b2616fa2af3f38a73d3b61fbf68661',
+  HGET: '0xc7d8d35eba58a0935ff2d5a33df105dd9f071731',
   BAO: '0x47eaf5f54d79d5c2b6537a90a0c58a534ab51c8c',
   FRONT: '0x928e55dab735aa8260af3cedada18b5f70c72f1b',
   MIR: '0x5b6dcf557e2abe2323c48445e8cc948910d8c2c9',
@@ -190,7 +190,7 @@ const tokenMap = {
   UNFI: new TokenDescriptor('0x728c5bac3c3e370e372fc4671f9ef6916b814d8b', '', 18),
   BUX: new TokenDescriptor('0x211ffbe424b90e25a15531ca322adf1559779e45', '', 18),
   MDS: new TokenDescriptor('0x242e46490397acca94ed930f2c4edf16250237fa', '', 18),
-  HGET: new TokenDescriptor('0x794f976c12b2616fa2af3f38a73d3b61fbf68661', '', 6),
+  HGET: new TokenDescriptor('0xc7d8d35eba58a0935ff2d5a33df105dd9f071731', '', 6),
   BAO: new TokenDescriptor('0x47eaf5f54d79d5c2b6537a90a0c58a534ab51c8c', '', 18),
   FRONT: new TokenDescriptor('0x928e55dab735aa8260af3cedada18b5f70c72f1b', '', 18),
   MIR: new TokenDescriptor('0x5b6dcf557e2abe2323c48445e8cc948910d8c2c9', '', 18),
@@ -213,6 +213,9 @@ export const priceOracles = {
     [addressMap.PNDA]: 'bao-finance',
     [addressMap.BNB]: '0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE',
     [addressMap.BUSD]: '0xcBb98864Ef56E9042e7d2efef76141f15731B82f',
+    [addressMap.USDC]: '0x51597f405303C4377E36123cBc172b13269EA163',
+    [addressMap.ETH]: '0x9ef1B8c0E4F7dc8bF5719Ea496883DC6401d5b2e',
+    [addressMap.DAI]: '0x132d3C0B1D2cEa0BC552588063bdBb210FDeecfA',
   },
 }
 
