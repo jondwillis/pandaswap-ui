@@ -242,7 +242,7 @@ export default function Swap() {
 	])
 
 	const { ethereum } = window
-	const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [])
+	const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [ethereum])
 	const isPndaSelected =
 		currencies[Field.INPUT]?.symbol === PNDA.symbol || currencies[Field.OUTPUT]?.symbol === PNDA.symbol
 
