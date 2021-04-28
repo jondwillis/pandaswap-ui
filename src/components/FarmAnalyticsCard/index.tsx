@@ -4,7 +4,7 @@ import { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { getEtherscanLink } from '../../utils'
 import { AutoColumn } from '../Column'
-import { HoverCard, FixedHeightRow } from '../PositionCard'
+import { HoverCard, FixedHeightRow, BalanceText } from '../PositionCard'
 import { RowFixed, AutoRow } from '../Row'
 import { Text } from 'rebass'
 import { ExternalLink, StyledInternalLink } from '../../theme'
@@ -15,11 +15,12 @@ import { Fraction, Percent } from 'uniswap-bsc-sdk'
 interface FarmAnalyticsCardProps {
 	farmablePool: PoolInfoFarmablePool
 	apy?: Fraction | undefined
+	tvl?: Fraction | undefined
 	border?: string
 	defaultShowMore: boolean
 }
 
-export function FarmAnalyticsCard({ farmablePool, apy, border, defaultShowMore }: FarmAnalyticsCardProps) {
+export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowMore }: FarmAnalyticsCardProps) {
 	const theme = useContext(ThemeContext)
 	const { chainId } = useActiveWeb3React()
 
@@ -39,7 +40,7 @@ export function FarmAnalyticsCard({ farmablePool, apy, border, defaultShowMore }
 						/>
 						<AutoColumn>
 							<RowFixed>
-								<Text fontWeight={600} fontSize={18}>
+								<Text fontWeight={600} fontSize={14}>
 									{name}
 								</Text>
 							</RowFixed>
@@ -51,11 +52,24 @@ export function FarmAnalyticsCard({ farmablePool, apy, border, defaultShowMore }
 						</AutoColumn>
 					</RowFixed>
 					<RowFixed>
-						{apy?.greaterThan('0') && !farmablePool.isSushi && (
-							<StyledInternalLink to="/analytics">
-								{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
-							</StyledInternalLink>
-						)}
+						<AutoColumn
+							gap="0.2rem"
+							justify="end"
+							style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end', paddingRight: '0.5rem' }}
+						>
+							{apy?.greaterThan('0') && !farmablePool.isSushi && (
+								<StyledInternalLink to="/analytics">
+									{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+								</StyledInternalLink>
+							)}
+							{tvl && !farmablePool.isSushi && (
+								<span>
+									<BalanceText>
+										{`$${tvl.toFixed(2, {})}`} <Text fontSize="8pt">TVL</Text>
+									</BalanceText>
+								</span>
+							)}
+						</AutoColumn>
 						{showMore ? (
 							<ChevronUp size="20" style={{ marginLeft: '10px' }} />
 						) : (

@@ -28,6 +28,7 @@ import useDebounce from '../../hooks/useDebounce'
 import Toggle from '../../components/Toggle'
 import { useSortByAPYManager } from '../../state/user/hooks'
 import { Option } from '../../components/RadioButton'
+import Logo from '../../components/Logo'
 
 export default function Analytics() {
 	const { t } = useTranslation()
@@ -72,6 +73,7 @@ export default function Analytics() {
 			return {
 				...farm,
 				apy: allAPYs[i],
+				tvl: allStakedTVL[i],
 			}
 		})
 
@@ -97,7 +99,7 @@ export default function Analytics() {
 			})
 		}
 		return combined
-	}, [allAPYs, poolInfo, query, sortByAPY, filterPoolType])
+	}, [poolInfo, sortByAPY, allAPYs, allStakedTVL, query, filterPoolType])
 
 	const isLoading = fetchingPoolInfo
 
@@ -131,7 +133,7 @@ export default function Analytics() {
 						Filter Pool Type:
 						<RowFixed>
 							<Option
-								disabled={true}
+								style={{ display: 'none' }}
 								onClick={() => {
 									handleFilterPoolType('all')
 								}}
@@ -143,7 +145,7 @@ export default function Analytics() {
 								ALL
 							</Option>
 							<Option
-								disabled={true}
+								style={{ display: 'none' }}
 								onClick={() => {
 									handleFilterPoolType('pancake')
 								}}
@@ -160,10 +162,11 @@ export default function Analytics() {
 								}}
 								active={filterPoolType === 'panda'}
 							>
-								<span role="img" aria-label="PANDALP">
-									🐼
-								</span>{' '}
-								PNDALP
+								<Logo
+									srcs={[`images/pnda-logo.png`]}
+									alt="PNDA-LP"
+									style={{ width: 16, height: 16, objectFit: 'contain', margin: 4 }}
+								/>
 							</Option>
 						</RowFixed>
 					</RowBetween>
@@ -186,6 +189,7 @@ export default function Analytics() {
 									key={`analytics-${farm.address}`}
 									farmablePool={farm}
 									apy={farm.apy}
+									tvl={farm.tvl}
 									defaultShowMore={false}
 								/>
 							))}
