@@ -218,7 +218,7 @@ const AddListButton = styled(ButtonSecondary)`
 	/* height: 1.8rem; */
 	max-width: 4rem;
 	margin-left: 1rem;
-	border-radius: 12px;
+	border-radius: 6px;
 	padding: 10px 18px;
 `
 

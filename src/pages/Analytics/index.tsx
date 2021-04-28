@@ -131,7 +131,7 @@ export default function Analytics() {
 						Filter Pool Type:
 						<RowFixed>
 							<Option
-                disabled={true}
+								disabled={true}
 								onClick={() => {
 									handleFilterPoolType('all')
 								}}
@@ -143,7 +143,7 @@ export default function Analytics() {
 								ALL
 							</Option>
 							<Option
-                disabled={true}
+								disabled={true}
 								onClick={() => {
 									handleFilterPoolType('pancake')
 								}}

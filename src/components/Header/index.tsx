@@ -8,15 +8,16 @@ import { useActiveWeb3React } from '../../hooks'
 
 import { useETHBalances } from '../../state/wallet/hooks'
 
-import { LightCard } from '../Card'
+import { YellowCard } from '../Card'
 import Settings from '../Settings'
 import Menu from '../Menu'
+
 import { RowBetween, RowFixed } from '../Row'
-import Column from '../Column'
 import Web3Status from '../Web3Status'
 import { Zap, ZapOff } from 'react-feather'
 import Logo from '../../assets/images/pnda-logo.png'
 import '../../assets/fonts.css'
+import Column from '../Column'
 
 const HeaderFrame = styled.div`
 	display: flex;
@@ -32,6 +33,7 @@ const HeaderFrame = styled.div`
     width: calc(100%);
     position: relative;
   `};
+	padding-bottom: 1rem;
 `
 
 const HeaderElement = styled.div`
@@ -102,15 +104,20 @@ const AccountElement = styled.div<{ active: boolean }>`
 const TestnetWrapper = styled.div`
 	white-space: nowrap;
 	width: fit-content;
-	margin: 5px;
+	margin-left: 10px;
 	pointer-events: auto;
 `
 
-const NetworkCard = styled(LightCard)`
+const NetworkCard = styled(YellowCard)`
 	width: fit-content;
-	border-radius: 12px;
-	padding: 6px;
-	background-color: ${({ theme }) => theme.advancedBG};
+	margin-right: 10px;
+	padding: 8px 12px;
+	border: none;
+	background-color: transparent;
+	height: 35px;
+	background-color: ${({ theme }) => theme.bg3};
+	border-radius: 0.5rem;
+	color: ${({ theme }) => theme.text6};
 `
 
 const PandaIcon = styled.div`
@@ -167,7 +174,7 @@ const NETWORK_LABELS: { [chainId in ChainId]: string | null } = {
 	[ChainId.ROPSTEN]: 'Ropsten',
 	[ChainId.GÖRLI]: 'Görli',
 	[ChainId.KOVAN]: 'Kovan',
-	[ChainId.XDAI]: 'BSC'
+	[ChainId.XDAI]: 'BSC',
 }
 
 export default function Header() {
@@ -227,7 +234,7 @@ export default function Header() {
 							<StyledTradeLink
 								style={{
 									background: `linear-gradient(128.17deg, #337855 -14.78%, #4ab684 110.05%)`,
-									color: 'white'
+									color: 'white',
 								}}
 								target="_blank"
 								href="https://farms.pandaswap.xyz/"
