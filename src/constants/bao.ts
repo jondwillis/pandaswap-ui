@@ -306,10 +306,10 @@ export const supportedPools: SupportedPool[] = [
   {
     pid: 4,
     lpAddresses: {
-      56: '0x7c8ba77476a3e713b27e7c1450227a0ff3411616',
+      56: '0x7C8BA77476A3E713b27E7c1450227A0fF3411616',
     },
     tokenAddresses: {
-      56: [tokenMap.PNDA, tokenMap.DAI],
+      56: [tokenMap.DAI, tokenMap.PNDA],
     },
     tokenDecimals: 18,
     name: 'PNDA-DAI',
