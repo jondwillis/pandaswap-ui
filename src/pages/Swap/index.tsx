@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import AddressInputPanel from '../../components/AddressInputPanel'
-import { ButtonError, ButtonImagePlus, ButtonPrimary } from '../../components/Button'
+import { ButtonError, ButtonImagePlus, ButtonLight, ButtonPrimary } from '../../components/Button'
 import Card, { GreyCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
@@ -242,8 +242,8 @@ export default function Swap() {
 	])
 
 	const { ethereum } = window
-	const handleAddBaocxToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [ethereum])
-	const isBaocxSelected =
+	const handleAddPndaToMM = useCallback(() => addTokenToMetamask(ethereum, PNDA), [])
+	const isPndaSelected =
 		currencies[Field.INPUT]?.symbol === PNDA.symbol || currencies[Field.OUTPUT]?.symbol === PNDA.symbol
 
 	return (
@@ -253,9 +253,9 @@ export default function Swap() {
 				tokens={urlLoadedTokens}
 				onConfirm={handleConfirmTokenWarning}
 			/>
-			{isBaocxSelected && (
+			{isPndaSelected && (
 				<ButtonImagePlus
-					onClick={() => handleAddBaocxToMM()}
+					onClick={() => handleAddPndaToMM()}
 					style={{
 						width: 'auto',
 						position: 'absolute',
@@ -374,7 +374,7 @@ export default function Swap() {
 					</AutoColumn>
 					<BottomGrouping>
 						{!account ? (
-							<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
+							<ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
 						) : showWrap ? (
 							<ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
 								{wrapInputError ??

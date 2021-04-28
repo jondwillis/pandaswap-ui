@@ -1,20 +1,19 @@
 // import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, ETHER, Percent, WETH } from 'uniswap-bsc-sdk'
+import { Currency, ETHER, Percent } from 'uniswap-bsc-sdk'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import { ButtonPrimary, ButtonError, ButtonConfirmed } from '../../components/Button'
+import { ButtonPrimary, ButtonLight, ButtonError, ButtonConfirmed } from '../../components/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
-import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFixed } from '../../components/Row'
 
 import Slider from '../../components/Slider'
@@ -25,7 +24,7 @@ import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
-import { StyledInternalLink, TYPE } from '../../theme'
+import { TYPE } from '../../theme'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
@@ -114,7 +113,7 @@ export default function RemoveLiquidity({
 		//   { name: 'verifyingContract', type: 'address' }
 		// ]
 		// const domain = {
-		//   name: 'Baoswap V2',
+		//   name: 'Pandaswap V2',
 		//   version: '1',
 		//   chainId: chainId,
 		//   verifyingContract: pair.liquidityToken.address
@@ -352,7 +351,7 @@ export default function RemoveLiquidity({
 			<>
 				<RowBetween>
 					<Text color={theme.text2} fontWeight={500} fontSize={16}>
-						{'PNDA ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
+						{'UNI ' + currencyA?.symbol + '/' + currencyB?.symbol} Burned
 					</Text>
 					<RowFixed>
 						<DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin={true} />
@@ -397,13 +396,6 @@ export default function RemoveLiquidity({
 			onUserInput(Field.LIQUIDITY_PERCENT, value.toString())
 		},
 		[onUserInput]
-	)
-
-	const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
-	const oneCurrencyIsWETH = Boolean(
-		chainId &&
-			((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
-				(currencyB && currencyEquals(WETH[chainId], currencyB)))
 	)
 
 	const handleSelectCurrencyA = useCallback(
@@ -531,27 +523,6 @@ export default function RemoveLiquidity({
 												</Text>
 											</RowFixed>
 										</RowBetween>
-										{chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
-											<RowBetween style={{ justifyContent: 'flex-end' }}>
-												{oneCurrencyIsETH ? (
-													<StyledInternalLink
-														to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-															currencyB === ETHER ? WETH[chainId].address : currencyIdB
-														}`}
-													>
-														Receive WXDAI
-													</StyledInternalLink>
-												) : oneCurrencyIsWETH ? (
-													<StyledInternalLink
-														to={`/remove/${
-															currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'ETH' : currencyIdA
-														}/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB}`}
-													>
-														Receive ETH
-													</StyledInternalLink>
-												) : null}
-											</RowBetween>
-										) : null}
 									</AutoColumn>
 								</LightCard>
 							</>
@@ -619,7 +590,7 @@ export default function RemoveLiquidity({
 						)}
 						<div style={{ position: 'relative' }}>
 							{!account ? (
-								<ButtonPrimary onClick={toggleWalletModal}>Connect Wallet</ButtonPrimary>
+								<ButtonLight onClick={toggleWalletModal}>Connect Wallet</ButtonLight>
 							) : (
 								<RowBetween>
 									<ButtonConfirmed
@@ -655,12 +626,6 @@ export default function RemoveLiquidity({
 					</AutoColumn>
 				</Wrapper>
 			</AppBody>
-
-			{pair ? (
-				<AutoColumn style={{ minWidth: '20rem', marginTop: '1rem' }}>
-					<MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-				</AutoColumn>
-			) : null}
 		</>
 	)
 }

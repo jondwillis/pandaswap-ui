@@ -1,5 +1,5 @@
 import { Currency, ETHER, JSBI, TokenAmount } from 'uniswap-bsc-sdk'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
 import { Text } from 'rebass'
 import { ButtonDropdownLight } from '../../components/Button'
@@ -14,12 +14,11 @@ import { PairState, usePair } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { usePairAdder } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
+import { StyledInternalLink } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
 import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'styled-components'
-import { StyledInternalLink } from '../../theme'
 
 enum Fields {
 	TOKEN0 = 0,
@@ -28,7 +27,6 @@ enum Fields {
 
 export default function PoolFinder() {
 	const { t } = useTranslation()
-	const theme = useContext(ThemeContext)
 	const { account } = useActiveWeb3React()
 
 	const [showSearch, setShowSearch] = useState<boolean>(false)
@@ -85,7 +83,6 @@ export default function PoolFinder() {
 			<FindPoolTabs />
 			<AutoColumn gap="md">
 				<ButtonDropdownLight
-					style={{ color: theme.text1 }}
 					onClick={() => {
 						setShowSearch(true)
 						setActiveField(Fields.TOKEN0)
@@ -110,7 +107,6 @@ export default function PoolFinder() {
 				</ColumnCenter>
 
 				<ButtonDropdownLight
-					style={{ color: theme.text1 }}
 					onClick={() => {
 						setShowSearch(true)
 						setActiveField(Fields.TOKEN1)
@@ -190,7 +186,6 @@ export default function PoolFinder() {
 				isOpen={showSearch}
 				onCurrencySelect={handleCurrencySelect}
 				onDismiss={handleSearchDismiss}
-				showCommonBases
 				selectedCurrency={(activeField === Fields.TOKEN0 ? currency1 : currency0) ?? undefined}
 			/>
 		</AppBody>
