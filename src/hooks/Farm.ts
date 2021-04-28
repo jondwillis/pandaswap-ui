@@ -4,7 +4,7 @@ import { FarmablePool } from '../constants/bao'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useMasterChefContract } from './useContract'
 
-const REFERRAL_ADDRESS = process.env.REFERRAL_ADDRESS || '0x0000000000000000000000000000000000000000'
+const REFERRAL_ADDRESS = process.env.REFERRAL_ADDRESS ?? '0x0000000000000000000000000000000000000000'
 
 export enum HarvestState {
   UNKNOWN,
