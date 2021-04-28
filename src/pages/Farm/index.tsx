@@ -21,7 +21,7 @@ import { Dots } from '../../components/swap/styleds'
 
 import { usePndaBalance, useMasterChefContract } from '../../hooks/useContract'
 import { getEtherscanLink, shortenAddress } from '../../utils'
-import { Fraction, TokenAmount } from 'uniswap-bsc-sdk'
+import { Fraction, JSBI, TokenAmount } from 'uniswap-bsc-sdk'
 import { useHarvestAll } from '../../hooks/Farm'
 import { useLockedEarned } from '../../data/Staked'
 import { ChevronRight, Loader, Lock as LockIcon, Unlock as UnlockIcon } from 'react-feather'
@@ -126,6 +126,9 @@ export default function Farm() {
 		() => (lockedEarnedAmount ? baoPriceUsd?.multiply(lockedEarnedAmount) : undefined),
 		[baoPriceUsd, lockedEarnedAmount]
 	)
+
+	const blocksToTimeEstimate = new Fraction(JSBI.BigInt(remainingBlocks), blocksPerYear).multiply(JSBI.BigInt(365))
+
 	return (
 		<>
 			<AppBody>
@@ -148,7 +151,7 @@ export default function Farm() {
 								<Question
 									text={`Every time you Harvest or change your Stake, you instantly earn 5% of your pending rewards, and the remaining 95% will begin unlocking linearly at block ${unlockBlock}.`}
 								/>
-								<Lock text={`Linear unlock begins in: ${(remainingBlocks / blocksPerYear).toFixed(2)} days`} />
+								<Lock text={`Linear unlock begins in: ${blocksToTimeEstimate.toFixed(2)} days`} />
 							</RowFixed>
 							<AutoColumn justify="end">
 								{lockedEarnedAmount ? (
