@@ -12,12 +12,11 @@ import { YellowCard } from '../Card'
 import Settings from '../Settings'
 import Menu from '../Menu'
 
-import { RowBetween, RowFixed } from '../Row'
+import { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import { Zap, ZapOff } from 'react-feather'
 import Logo from '../../assets/images/pnda-logo.png'
 import '../../assets/fonts.css'
-import Column from '../Column'
 
 const HeaderFrame = styled.div`
 	display: flex;
@@ -104,17 +103,17 @@ const AccountElement = styled.div<{ active: boolean }>`
 const TestnetWrapper = styled.div`
 	white-space: nowrap;
 	width: fit-content;
-	margin-left: 10px;
+	margin: 2px;
 	pointer-events: auto;
 `
 
 const NetworkCard = styled(YellowCard)`
 	width: fit-content;
-	margin-right: 10px;
+	margin-right: 2px;
 	padding: 8px 12px;
 	border: none;
 	background-color: transparent;
-	height: 35px;
+	height: 40px;
 	background-color: ${({ theme }) => theme.bg3};
 	border-radius: 0.5rem;
 	color: ${({ theme }) => theme.text6};
@@ -202,23 +201,16 @@ export default function Header() {
 						<TestnetWrapper>
 							{chainId && active && NETWORK_LABELS[chainId] && (
 								<NetworkCard>
-									<Column style={{ padding: 0, margin: 0 }}>
-										<RowBetween>
-											{active && !error ? (
-												<Zap size="10pt" style={{ color: theme.primary1 }} />
-											) : (
-												<ZapOff size="10pt" style={{ color: theme.red1 }} />
-											)}
-											<Text paddingLeft="0.15rem" fontWeight={800} fontSize={10}>
-												{NETWORK_LABELS[chainId]}
-											</Text>
-										</RowBetween>
-										<RowFixed>
-											<Text fontWeight={300} fontSize={9}>
-												ACTIVE
-											</Text>
-										</RowFixed>
-									</Column>
+									<RowBetween style={{ marginTop: 4 }}>
+										{active && !error ? (
+											<Zap size="14pt" style={{ color: theme.primary1 }} />
+										) : (
+											<ZapOff size="14pt" style={{ color: theme.red1 }} />
+										)}
+										<Text paddingLeft="0.15rem" fontWeight={800} fontSize={12}>
+											{NETWORK_LABELS[chainId]}
+										</Text>
+									</RowBetween>
 								</NetworkCard>
 							)}
 						</TestnetWrapper>
