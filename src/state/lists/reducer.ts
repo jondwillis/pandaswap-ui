@@ -4,7 +4,7 @@ import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS, DEFAULT_TOKEN_LIST_URL } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
 import { acceptListUpdate, addList, fetchTokenList, removeList, selectList } from './actions'
-import UNISWAP_DEFAULT_LIST from 'honeyswap-default-token-list'
+import UNISWAP_DEFAULT_LIST from './default-bsc.json'
 
 export interface ListsState {
   readonly byUrl: {
@@ -24,7 +24,7 @@ const NEW_LIST_STATE: ListsState['byUrl'][string] = {
   error: null,
   current: null,
   loadingRequestId: null,
-  pendingUpdate: null
+  pendingUpdate: null,
 }
 
 type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U> ? U[] : T[P] }
@@ -40,13 +40,13 @@ const initialState: ListsState = {
       error: null,
       current: UNISWAP_DEFAULT_LIST,
       loadingRequestId: null,
-      pendingUpdate: null
-    }
+      pendingUpdate: null,
+    },
   },
-  selectedListUrl: undefined
+  selectedListUrl: undefined,
 }
 
-export default createReducer(initialState, builder =>
+export default createReducer(initialState, (builder) =>
   builder
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
       state.byUrl[url] = {
@@ -54,7 +54,7 @@ export default createReducer(initialState, builder =>
         pendingUpdate: null,
         ...state.byUrl[url],
         loadingRequestId: requestId,
-        error: null
+        error: null,
       }
     })
     .addCase(fetchTokenList.fulfilled, (state, { payload: { requestId, tokenList, url } }) => {
@@ -71,7 +71,7 @@ export default createReducer(initialState, builder =>
             loadingRequestId: null,
             error: null,
             current: current,
-            pendingUpdate: tokenList
+            pendingUpdate: tokenList,
           }
         }
       } else {
@@ -80,7 +80,7 @@ export default createReducer(initialState, builder =>
           loadingRequestId: null,
           error: null,
           current: tokenList,
-          pendingUpdate: null
+          pendingUpdate: null,
         }
       }
     })
@@ -95,7 +95,7 @@ export default createReducer(initialState, builder =>
         loadingRequestId: null,
         error: errorMessage,
         current: null,
-        pendingUpdate: null
+        pendingUpdate: null,
       }
     })
     .addCase(selectList, (state, { payload: url }) => {
@@ -125,7 +125,7 @@ export default createReducer(initialState, builder =>
       state.byUrl[url] = {
         ...state.byUrl[url],
         pendingUpdate: null,
-        current: state.byUrl[url].pendingUpdate
+        current: state.byUrl[url].pendingUpdate,
       }
     })
     .addCase(updateVersion, state => {
