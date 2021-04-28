@@ -15,6 +15,8 @@ import { useAllTotalSupply } from '../data/TotalSupply'
 import { useAllStakedAmounts } from '../data/Staked'
 import { CHAINLINK_PRICE_ORACLE_INTERFACE, usePriceOracleContract } from '../constants/abis/Chainlink'
 
+export const blocksPerYear = JSBI.BigInt(10518984) // (31556952 = (seconds / year)) / (3 second/block) = 10518984.4
+
 const ten = JSBI.BigInt(10)
 
 export const useBaoUsdPrice = (): Fraction | undefined => {
@@ -312,7 +314,6 @@ export function useAPY(
     if (!baoPriceUsd || !tvlUsd || !tvlUsd.greaterThan('0') || !newRewardPerBlock) {
       return undefined
     }
-    const blocksPerYear = JSBI.BigInt(10518984) // (31556952 = (seconds / year)) / (3 second/block) = 10518984.4
 
     const decimated = JSBI.exponentiate(ten, JSBI.BigInt((rewardToken.decimals - 1).toString()))
 
@@ -338,8 +339,6 @@ export function useAllAPYs(
       if (!baoPriceUsd || !tvlUsd || !tvlUsd.greaterThan('0') || !newRewardPerBlock) {
         return undefined
       }
-
-      const blocksPerYear = JSBI.BigInt(10518984) // (31556952 = (seconds / year)) / (3 seconds/block) = 10518984.4
 
       const decimated = JSBI.exponentiate(ten, JSBI.BigInt((rewardToken.decimals - 1).toString()))
 

@@ -31,6 +31,7 @@ import { useSelectedListUrl } from '../../state/lists/hooks'
 import { useAllFarmablePools } from '../../constants/bao'
 import { PNDA } from '../../constants'
 import {
+	blocksPerYear,
 	useAllAPYs,
 	useAllNewRewardPerBlock,
 	useAllPriceOracleDescriptors,
@@ -145,9 +146,9 @@ export default function Farm() {
 									Locked {rewardToken.symbol}:
 								</Text>
 								<Question
-									text={`Every time you Harvest or change your Stake, you instantly earn 5% of your pending rewards, and the remaining 95% will begin unlocking linearly at xDAI block ${unlockBlock}.`}
+									text={`Every time you Harvest or change your Stake, you instantly earn 5% of your pending rewards, and the remaining 95% will begin unlocking linearly at block ${unlockBlock}.`}
 								/>
-								<Lock text={`Linear unlock begins in: ${(remainingBlocks / 12 / 60 / 24).toFixed(2)} days`} />
+								<Lock text={`Linear unlock begins in: ${(remainingBlocks / blocksPerYear).toFixed(2)} days`} />
 							</RowFixed>
 							<AutoColumn justify="end">
 								{lockedEarnedAmount ? (
