@@ -192,15 +192,18 @@ export function useAllStakedTVL(
   return useMemo(() => {
     return priceOracleDescriptors.map((pod, i) => {
       const { priceOracleBaseToken, isUsingBaoUsdPrice } = pod
+      const [token0, token1] = tokenPairs[i]
+      const isSingleSided = token0?.address == token1?.address
       const ratioStaked = ratiosStaked[i]
       const [, pair] = pairs[i]
+      const stakedAmount = stakedAmounts[i]
 
       const pricedInReserveFn = () => {
         const usingReserve = pair?.reserveOf(!isUsingBaoUsdPrice && priceOracleBaseToken ? priceOracleBaseToken : PNDA)
         return usingReserve
       }
 
-      const pricedInReserve = pricedInReserveFn()
+      const pricedInReserve = isSingleSided ? stakedAmount : pricedInReserveFn()
 
       const priceRaw: string | undefined = rawPriceResults[i].result?.[1]
       const decimals: string | undefined = decimalsResults[i].result?.[0]
@@ -210,11 +213,21 @@ export function useAllStakedTVL(
 
       const chainFraction = priceRaw && decimated ? new Fraction(JSBI.BigInt(priceRaw), decimated) : undefined
       const priceInUsd = fetchedPriceInUsd ? fetchedPriceInUsd : chainFraction
-      const tvl = priceInUsd && pricedInReserve && priceInUsd.multiply(pricedInReserve).multiply('2')
+      const tvl =
+        priceInUsd && pricedInReserve && priceInUsd.multiply(pricedInReserve).multiply(isSingleSided ? '1' : '2')
       const stakedTVL = tvl ? ratioStaked?.multiply(tvl) : undefined
       return stakedTVL
     })
-  }, [baoPriceUsd, decimalsResults, pairs, priceOracleDescriptors, rawPriceResults, ratiosStaked])
+  }, [
+    baoPriceUsd,
+    decimalsResults,
+    pairs,
+    priceOracleDescriptors,
+    rawPriceResults,
+    ratiosStaked,
+    tokenPairs,
+    stakedAmounts,
+  ])
 }
 
 export function useStakedTVL(
@@ -350,7 +363,7 @@ export function useAllAPYs(
 
       const rewardPerBlock = new Fraction(newRewardPerBlock, decimated)
 
-      return tvlUsd && baoPriceUsd.multiply(rewardPerBlock).multiply(blocksPerYear).divide(tvlUsd)
+      return tvlUsd && baoPriceUsd.multiply(rewardPerBlock).multiply(blocksPerYear).divide(tvlUsd).multiply('10')
     })
   }, [poolInfoFarmablePools, tvlUsds, newRewardPerBlocks, baoPriceUsd, rewardToken.decimals])
 }

@@ -216,6 +216,7 @@ export const priceOracles = {
     [addressMap.USDC]: '0x51597f405303C4377E36123cBc172b13269EA163',
     [addressMap.ETH]: '0x9ef1B8c0E4F7dc8bF5719Ea496883DC6401d5b2e',
     [addressMap.DAI]: '0x132d3C0B1D2cEa0BC552588063bdBb210FDeecfA',
+    [addressMap.CAKE]: '0xB6064eD41d4f67e353768aA239cA86f4F73665a1',
   },
 }
 
