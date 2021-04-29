@@ -42,6 +42,7 @@ import { FarmState, initialFarmState } from '../../state/farm/reducer'
 import AppBody from '../AppBody'
 import { PoolBody } from '../Pool'
 import { usePoolProps } from '../../hooks/Pool'
+import { useAllTotalSupply } from '../../data/TotalSupply'
 
 export default function Farm() {
 	const theme = useContext(ThemeContext)
@@ -120,9 +121,31 @@ export default function Farm() {
 
 	const allPriceOracles = useAllPriceOracleDescriptors(userInfo)
 
-	const allStakedTVL = useAllStakedTVL(userInfo, allPriceOracles, baoPriceUsd)
+	const allStakedTVLs = useAllStakedTVL(userInfo, allPriceOracles, baoPriceUsd)
 
-	const allAPYs = useAllAPYs(userInfo, baoPriceUsd, allNewRewardPerBlock, allStakedTVL)
+	const totalSupplies = useAllTotalSupply(userInfo)
+
+	const zero = useMemo(() => new Fraction('0', '1'), [])
+	const allStakedTVL = useMemo(
+		() =>
+			allStakedTVLs.reduce((current, next, i) => {
+				const sum = current ?? zero
+				const add = next ?? zero
+				const totalSupply = totalSupplies[i]
+				if (!totalSupply) {
+					return zero
+				}
+				const totalSupplyFraction = new Fraction(totalSupply.numerator, totalSupply.denominator)
+				const totalSupplyRatio = totalSupplyFraction
+				const yourRatioStaked = totalSupplyRatio.greaterThan('0')
+					? userInfo[i].stakedAmount.divide(totalSupplyRatio)
+					: zero
+				return sum.add(add.multiply(yourRatioStaked))
+			}, zero),
+		[allStakedTVLs, userInfo, totalSupplies, zero]
+	)
+
+	const allAPYs = useAllAPYs(userInfo, baoPriceUsd, allNewRewardPerBlock, allStakedTVLs)
 
 	const lockedBaocxBalanceUsd = useMemo(
 		() => (lockedEarnedAmount ? baoPriceUsd?.multiply(lockedEarnedAmount) : undefined),
@@ -173,6 +196,16 @@ export default function Farm() {
 									'-'
 								)}
 							</AutoColumn>
+						</RowBetween>
+						<RowBetween marginTop="12px">
+							<Text color={theme.text1} fontWeight={500}>
+								Your Staked Value:
+							</Text>
+							<RowFixed>
+								<Text color={theme.primary1} fontWeight={900}>
+									{allStakedTVL && allStakedTVL.greaterThan('0') ? allStakedTVL.toFixed(2, {}) : '-'} USD
+								</Text>
+							</RowFixed>
 						</RowBetween>
 					</AutoColumn>
 				</LightCard>
@@ -255,7 +288,7 @@ export default function Farm() {
 										farmablePool={farmablePool}
 										baoPriceUsd={baoPriceUsd}
 										apy={allAPYs[i]}
-										allStakedTVL={allStakedTVL[i]}
+										allStakedTVL={allStakedTVLs[i]}
 										unstakedLPAmount={tokenBalanceMap[farmablePool.address]}
 										defaultShowMore={false}
 									/>
