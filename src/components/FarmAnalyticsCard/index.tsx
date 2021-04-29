@@ -59,26 +59,25 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 							style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end', paddingRight: '0.5rem' }}
 						>
 							{apy?.greaterThan('0') && !farmablePool.isSushi && (
-								<StyledInternalLink to="/analytics">
-									<APYTooltip
-										element={
-											<>
-												{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
-											</>
-										}
-										text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
-											.divide(new Fraction('1461', '4'))
-											.divide('20')
-											.toFixed(2, {})}% unlocked) per day`}
-									/>
-								</StyledInternalLink>
+								<APYTooltip
+									element={
+										<StyledInternalLink to="/analytics">
+											{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APR</span>
+										</StyledInternalLink>
+									}
+									text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
+										.divide(new Fraction('1461', '4'))
+										.divide('20')
+										.toFixed(2, {})}% unlocked) per day`}
+								/>
 							)}
 							{tvl && !farmablePool.isSushi && (
-								<span>
-									<BalanceText>
-										{`$${tvl.toFixed(2, {})}`} <Text fontSize="8pt">TVL</Text>
-									</BalanceText>
-								</span>
+								<RowFixed>
+									<BalanceText>{`$${tvl.toFixed(2, {})}`}</BalanceText>
+									<Text fontSize="7pt" paddingTop="3.5pt" paddingLeft="3pt">
+										TVL
+									</Text>
+								</RowFixed>
 							)}
 						</AutoColumn>
 						{showMore ? (
@@ -111,7 +110,7 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 							</RowFixed>
 							<RowFixed>
 								<Text fontSize={16} fontWeight={500}>
-									{totalSupply ? totalSupply.toSignificant(8) : '-'}
+									{totalSupply ? totalSupply.toSignificant(8, {}) : '-'}
 								</Text>
 							</RowFixed>
 						</FixedHeightRow>
@@ -125,7 +124,10 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 								<Text fontSize={16} fontWeight={500}>
 									{stakedAmount &&
 										totalSupply &&
-										`${stakedAmount.toSignificant(8)} (${new Percent(stakedAmount.raw, totalSupply.raw).toFixed(2)}%)`}
+										`${stakedAmount.toSignificant(8, {})} (${new Percent(stakedAmount.raw, totalSupply.raw).toFixed(
+											2,
+											{}
+										)}%)`}
 								</Text>
 							</RowFixed>
 						</FixedHeightRow>

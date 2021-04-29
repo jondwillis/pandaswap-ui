@@ -108,13 +108,20 @@ export function FarmPositionCard({
 	return (
 		<HoverCard border={border} style={{ backgroundColor: theme.bg2 }}>
 			<AutoColumn gap="12px">
-				<FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer', height: 40 }}>
-					<RowFixed>
-						<Logo
-							srcs={[`images/pool-logos/${icon}`]}
-							alt={name}
-							style={{ width: 40, height: 40, objectFit: 'contain', margin: 10, marginLeft: 0 }}
-						/>
+				<FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer', height: 80 }}>
+					<RowFixed style={{ justifyContent: 'start', textAlign: 'start' }}>
+						<AutoColumn style={{ justifyContent: 'center', alignContent: 'center' }}>
+							<Logo
+								srcs={[`images/pool-logos/${icon}`]}
+								alt={name}
+								style={{ width: 40, height: 40, objectFit: 'contain', margin: 10, marginLeft: 0 }}
+							/>
+							{showMore ? (
+								<ChevronUp size="20" style={{ margin: 10 }} />
+							) : (
+								<ChevronDown size="20" style={{ margin: 10 }} />
+							)}
+						</AutoColumn>
 						<AutoColumn>
 							<RowFixed>
 								<Text fontWeight={600} fontSize={18}>
@@ -126,41 +133,65 @@ export function FarmPositionCard({
 									{farmablePool.symbol}
 								</Text>
 							</RowFixed>
-						</AutoColumn>
-					</RowFixed>
-					<RowFixed>
-						<AutoColumn
-							gap="0.2rem"
-							justify="end"
-							style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end', paddingRight: '0.5rem' }}
-						>
-							{apy?.greaterThan('0') && !farmablePool.isSushi && (
-								<StyledInternalLink to="/analytics">
+							<RowFixed marginTop={2}>
+								{apy?.greaterThan('0') && !farmablePool.isSushi && (
 									<APYTooltip
 										element={
-											<>
-												{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
-											</>
+											<StyledInternalLink to="/analytics">
+												{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APR</span>
+											</StyledInternalLink>
 										}
 										text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
 											.divide(new Fraction('1461', '4'))
 											.divide('20')
 											.toFixed(2, {})}% unlocked) per day`}
 									/>
-								</StyledInternalLink>
-							)}
-							{yourStakeTVL && (
-								<AutoColumn justify="end">
-									<Text fontSize="8pt">Your Stake</Text>
+								)}
+							</RowFixed>
+							{yourStakeTVL && !farmablePool.isSushi && (
+								<RowFixed>
 									<BalanceText>{`$${yourStakeTVL.toFixed(2, {})}`}</BalanceText>
-								</AutoColumn>
+									<span style={{ flexShrink: 1, fontSize: '7pt', paddingTop: '3.5pt', paddingLeft: '3pt' }}>
+										Staked
+									</span>
+								</RowFixed>
 							)}
 						</AutoColumn>
-						{showMore ? (
-							<ChevronUp size="20" style={{ marginLeft: '2px' }} />
-						) : (
-							<ChevronDown size="20" style={{ marginLeft: '2px' }} />
-						)}
+					</RowFixed>
+					<RowFixed>
+						<AutoColumn>
+							<ButtonPrimary
+								padding="0.5rem"
+								onClick={(e) => {
+									e.stopPropagation()
+									handleHarvestAll()
+								}}
+								disabled={attemptingHarvest}
+							>
+								{attemptingHarvest ? (
+									<span>
+										<Dots>Harvesting</Dots>
+										<IconWrapper pending={attemptingHarvest} success={!attemptingHarvest}>
+											<Loader />
+										</IconWrapper>
+									</span>
+								) : (
+									<span>
+										<Text color={theme.text5} fontWeight={600}>
+											Harvest
+										</Text>
+										<BalanceText style={{ flexShrink: 0, textAlign: 'end' }} pr="0.5rem" fontWeight={800}>
+											&nbsp;&nbsp;
+											<UnlockIcon size="14px" /> {unlockedPending?.toFixed(0) || '-'}{' '}
+											<span style={{ flexShrink: 1, fontSize: '8pt' }}>{rewardCurrency.symbol}</span>
+											<br />
+											+ <LockIcon size="14px" /> {lockedPending?.toFixed(0) || '-'}{' '}
+											<span style={{ flexShrink: 1, fontSize: '8pt' }}>{rewardCurrency.symbol}</span>
+										</BalanceText>
+									</span>
+								)}
+							</ButtonPrimary>
+						</AutoColumn>
 					</RowFixed>
 				</FixedHeightRow>
 				{showMore && (
@@ -247,32 +278,6 @@ export function FarmPositionCard({
 										-Unstake All
 									</ButtonSecondary>
 								</RowBetween>
-							</AutoColumn>
-							<AutoColumn>
-								<ButtonPrimary padding="0.5rem" onClick={() => handleHarvestAll()} disabled={attemptingHarvest}>
-									{attemptingHarvest ? (
-										<span>
-											<Dots>Harvesting</Dots>
-											<IconWrapper pending={attemptingHarvest} success={!attemptingHarvest}>
-												<Loader />
-											</IconWrapper>
-										</span>
-									) : (
-										<span>
-											<Text color={theme.text5} fontWeight={600}>
-												Harvest
-											</Text>
-											<BalanceText style={{ flexShrink: 0, textAlign: 'end' }} pr="0.5rem" fontWeight={800}>
-												&nbsp;&nbsp;
-												<UnlockIcon size="14px" /> {unlockedPending?.toFixed(0) || '-'}{' '}
-												<span style={{ flexShrink: 1, fontSize: '8pt' }}>{rewardCurrency.symbol}</span>
-												<br />
-												+ <LockIcon size="14px" /> {lockedPending?.toFixed(0) || '-'}{' '}
-												<span style={{ flexShrink: 1, fontSize: '8pt' }}>{rewardCurrency.symbol}</span>
-											</BalanceText>
-										</span>
-									)}
-								</ButtonPrimary>
 							</AutoColumn>
 						</RowBetween>
 

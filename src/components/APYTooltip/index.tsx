@@ -4,9 +4,6 @@ import Tooltip from '../Tooltip'
 
 const Wrapper = styled.div`
 	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0.2rem;
 	border: none;
 	background: none;
 	outline: none;
@@ -28,12 +25,10 @@ export default function APYTooltip({ element, text }: { element: React.ReactFrag
 	const close = useCallback(() => setShow(false), [setShow])
 
 	return (
-		<span style={{ marginLeft: 4 }}>
-			<Tooltip text={text} show={show}>
-				<Wrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
-					{element}
-				</Wrapper>
-			</Tooltip>
-		</span>
+		<Tooltip text={text} show={show}>
+			<Wrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
+				{element}
+			</Wrapper>
+		</Tooltip>
 	)
 }

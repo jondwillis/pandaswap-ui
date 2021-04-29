@@ -181,14 +181,16 @@ export default function Analytics() {
 						</RowFixed>
 					</RowBetween>
 					<RowBetween padding={'0 8px'}>
-						<Text color={theme.text1} fontWeight={500}>
-							Total Value Locked (TVL):
-						</Text>
+						<div></div>
 						<RowFixed>
-							<Text color={theme.primary1} fontWeight={900}>
+							<Text color={theme.text1} fontWeight={500} fontSize={18} paddingRight={1}>
+								TVL
+							</Text>
+							<Text color={theme.primary1} fontWeight={900} fontSize={18}>
 								{allStakedTVL && allStakedTVL.greaterThan('0') ? allStakedTVL.toFixed(2, {}) : '-'} USD
 							</Text>
 						</RowFixed>
+						<div></div>
 					</RowBetween>
 					{!active ? (
 						<LightCard padding="40px">

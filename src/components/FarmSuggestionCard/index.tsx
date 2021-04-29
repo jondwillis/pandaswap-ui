@@ -89,19 +89,17 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 								style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end' }}
 							>
 								{apy?.greaterThan('0') && !farmablePool.isSushi && (
-									<StyledInternalLink to="/analytics">
-										<APYTooltip
-											element={
-												<>
-													{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
-												</>
-											}
-											text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
-												.divide(new Fraction('1461', '4'))
-												.divide('20')
-												.toFixed(2, {})}% unlocked) per day`}
-										/>
-									</StyledInternalLink>
+									<APYTooltip
+										element={
+											<StyledInternalLink to="/analytics">
+												{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APR</span>
+											</StyledInternalLink>
+										}
+										text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
+											.divide(new Fraction('1461', '4'))
+											.divide('20')
+											.toFixed(2, {})}% unlocked) per day`}
+									/>
 								)}
 								<ButtonSecondary
 									width="4.5rem"
