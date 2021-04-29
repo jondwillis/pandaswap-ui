@@ -83,7 +83,11 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 							</AutoColumn>
 						</RowFixed>
 						<RowFixed>
-							<AutoColumn gap="4px">
+							<AutoColumn
+								gap="0.2rem"
+								justify="end"
+								style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end' }}
+							>
 								{apy?.greaterThan('0') && !farmablePool.isSushi && (
 									<StyledInternalLink to="/analytics">
 										<APYTooltip
