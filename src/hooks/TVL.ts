@@ -193,7 +193,7 @@ export function useAllStakedTVL(
     return priceOracleDescriptors.map((pod, i) => {
       const { priceOracleBaseToken, isUsingBaoUsdPrice } = pod
       const [token0, token1] = tokenPairs[i]
-      const isSingleSided = token0?.address == token1?.address
+      const isSingleSided = token0?.address === token1?.address
       const ratioStaked = ratiosStaked[i]
       const [, pair] = pairs[i]
       const stakedAmount = stakedAmounts[i]
@@ -215,7 +215,7 @@ export function useAllStakedTVL(
       const priceInUsd = fetchedPriceInUsd ? fetchedPriceInUsd : chainFraction
       const tvl =
         priceInUsd && pricedInReserve && priceInUsd.multiply(pricedInReserve).multiply(isSingleSided ? '1' : '2')
-      const stakedTVL = tvl ? ratioStaked?.multiply(tvl) : undefined
+      const stakedTVL = tvl ? (isSingleSided ? tvl : ratioStaked?.multiply(tvl)) : undefined
       return stakedTVL
     })
   }, [
