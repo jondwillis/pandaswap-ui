@@ -129,7 +129,9 @@ export default function Farm() {
 		[baoPriceUsd, lockedEarnedAmount]
 	)
 
-	const blocksToTimeEstimate = new Fraction(JSBI.BigInt(remainingBlocks), blocksPerYear).multiply(JSBI.BigInt(365))
+	const blocksToTimeEstimate = new Fraction(JSBI.BigInt(remainingBlocks), blocksPerYear).multiply(
+		new Fraction('1461', '4')
+	)
 
 	return (
 		<>
