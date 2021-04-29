@@ -29,6 +29,7 @@ import Toggle from '../../components/Toggle'
 import { useSortByAPYManager } from '../../state/user/hooks'
 import { Option } from '../../components/RadioButton'
 import Logo from '../../components/Logo'
+import { Fraction } from 'uniswap-bsc-sdk'
 
 export default function Analytics() {
 	const { t } = useTranslation()
@@ -64,16 +65,25 @@ export default function Analytics() {
 
 	const allPriceOracles = useAllPriceOracleDescriptors(poolInfo)
 
-	const allStakedTVL = useAllStakedTVL(poolInfo, allPriceOracles, baoPriceUsd)
+	const allStakedTVLs = useAllStakedTVL(poolInfo, allPriceOracles, baoPriceUsd)
 
-	const allAPYs = useAllAPYs(poolInfo, baoPriceUsd, allNewRewardPerBlock, allStakedTVL)
+	const allStakedTVL = useMemo(
+		() =>
+			allStakedTVLs.reduce(
+				(current, next) => current?.add(next ?? new Fraction('0', '1')) ?? new Fraction('0', '1'),
+				new Fraction('0', '1')
+			),
+		[allStakedTVLs]
+	)
+
+	const allAPYs = useAllAPYs(poolInfo, baoPriceUsd, allNewRewardPerBlock, allStakedTVLs)
 
 	const sortedAndFilteredPools = useMemo(() => {
 		const combined = poolInfo.map((farm, i) => {
 			return {
 				...farm,
 				apy: allAPYs[i],
-				tvl: allStakedTVL[i],
+				tvl: allStakedTVLs[i],
 			}
 		})
 
@@ -99,7 +109,7 @@ export default function Analytics() {
 			})
 		}
 		return combined
-	}, [poolInfo, sortByAPY, allAPYs, allStakedTVL, query, filterPoolType])
+	}, [poolInfo, sortByAPY, allAPYs, allStakedTVLs, query, filterPoolType])
 
 	const isLoading = fetchingPoolInfo
 
@@ -123,13 +133,13 @@ export default function Analytics() {
 						onChange={handleInput}
 						disabled={fetchingPoolInfo}
 					/>
-					<RowBetween>
+					<RowBetween padding={'0 8px'}>
 						Sort by APY (high to low):
 						<RowFixed>
 							<Toggle isActive={sortByAPY} toggle={toggleSortByAPY} />
 						</RowFixed>
 					</RowBetween>
-					<RowBetween>
+					<RowBetween padding={'0 8px'}>
 						Filter Pool Type:
 						<RowFixed>
 							<Option
@@ -168,6 +178,16 @@ export default function Analytics() {
 									style={{ width: 16, height: 16, objectFit: 'contain', margin: 4 }}
 								/>
 							</Option>
+						</RowFixed>
+					</RowBetween>
+					<RowBetween padding={'0 8px'}>
+						<Text color={theme.text1} fontWeight={500}>
+							Total Value Locked (TVL):
+						</Text>
+						<RowFixed>
+							<Text color={theme.primary1} fontWeight={900}>
+								{allStakedTVL && allStakedTVL.greaterThan('0') ? allStakedTVL.toFixed(2, {}) : '-'} USD
+							</Text>
 						</RowFixed>
 					</RowBetween>
 					{!active ? (
