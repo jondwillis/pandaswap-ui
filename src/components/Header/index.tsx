@@ -72,6 +72,9 @@ const TitleText = styled.div`
 	letter-spacing: 0.03rem;
 	margin-top: -1rem;
 	margin-left: 1rem;
+	${({ theme }) => theme.mediaWidth.upToSmall`
+		display: none;
+  `};
 `
 const TitleSubText = styled.div`
 	width: fit-content;
@@ -84,6 +87,9 @@ const TitleSubText = styled.div`
 	font-size: 16px;
 	line-height: 0.5rem;
 	letter-spacing: 0.03rem;
+	${({ theme }) => theme.mediaWidth.upToSmall`
+		display: none;
+  `};
 `
 
 const AccountElement = styled.div<{ active: boolean }>`
@@ -124,11 +130,6 @@ const PandaIcon = styled.div`
 	:hover {
 		transform: rotate(-5deg);
 	}
-	${({ theme }) => theme.mediaWidth.upToSmall`
-    img { 
-      width: 0rem;
-    }
-  `};
 `
 
 const HeaderControls = styled.div`
