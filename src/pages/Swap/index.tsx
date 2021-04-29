@@ -45,6 +45,8 @@ import { usePoolProps } from '../../hooks/Pool'
 export default function Swap() {
 	const loadedUrlParams = useDefaultsFromURLSearch()
 
+	const poolProps = usePoolProps()
+
 	// token warning stuff
 	const [loadedInputCurrency, loadedOutputCurrency] = [
 		useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -461,10 +463,14 @@ export default function Swap() {
 				</Wrapper>
 			</AppBody>
 			<AdvancedSwapDetailsDropdown trade={trade} />
-			<div style={{ marginBottom: '10px' }} />
-			<AppBody>
-				<PoolBody {...usePoolProps()} />
-			</AppBody>
+			{account && (
+				<>
+					<div style={{ marginBottom: '-10px' }} />
+					<AppBody>
+						<PoolBody {...poolProps} />
+					</AppBody>
+				</>
+			)}
 		</>
 	)
 }

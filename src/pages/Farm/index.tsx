@@ -47,6 +47,8 @@ export default function Farm() {
 	const theme = useContext(ThemeContext)
 	const { account, chainId } = useActiveWeb3React()
 
+	const poolProps = usePoolProps()
+
 	// toggle wallet when disconnected
 	const toggleWalletModal = useWalletModalToggle()
 
@@ -286,10 +288,14 @@ export default function Farm() {
 					</AutoColumn>
 				</AutoColumn>
 			</AppBody>
-			<div style={{ marginBottom: '10px' }} />
-			<AppBody>
-				<PoolBody {...usePoolProps()} />
-			</AppBody>
+			{account && (
+				<>
+					<div style={{ marginBottom: '10px' }} />
+					<AppBody>
+						<PoolBody {...poolProps} />
+					</AppBody>
+				</>
+			)}
 		</>
 	)
 }
