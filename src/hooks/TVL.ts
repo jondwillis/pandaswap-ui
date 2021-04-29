@@ -9,37 +9,46 @@ import {
   useSingleContractMultipleData,
 } from '../state/multicall/hooks'
 import { useMasterChefContract } from './useContract'
-import { PNDA, XDAI_WETH } from '../constants'
+import { BUSD, DAI, ETH, PNDA, USDC } from '../constants'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useAllTotalSupply } from '../data/TotalSupply'
 import { useAllStakedAmounts } from '../data/Staked'
 import { CHAINLINK_PRICE_ORACLE_INTERFACE, usePriceOracleContract } from '../constants/abis/Chainlink'
 
-export const blocksPerYear = JSBI.BigInt(10518984) // (31556952 = (seconds / year)) / (3 second/block) = 10518984.4
+export const blocksPerYear = JSBI.BigInt(10519200) // (31556952 = (seconds / year)) / (3 second/block) = 10518984.4
 
 const ten = JSBI.BigInt(10)
 
 export const useBaoUsdPrice = (): Fraction | undefined => {
-  // BAO-XDAI
+  // PNDA-BNB
   const XDAI = WETH[56]
   const [, pair1] = usePair(PNDA, XDAI)
   const xDaiUsdOracleAddress = useMemo(() => priceOracles[56][XDAI.address], [XDAI.address])
 
-  // BAO-WETH
-  const [, pair2] = usePair(PNDA, XDAI_WETH)
-  const wethUsdOracleAddress = useMemo(() => priceOracles[56][XDAI_WETH.address], [])
+  // PNDA-USDC
+  const [, pair2] = usePair(PNDA, USDC)
+  const wethUsdOracleAddress = useMemo(() => priceOracles[56][USDC.address], [])
 
-  // BAO-USDC
-  // const [, pair3] = usePair(PNDA, USDC)
-  // const usdcUsdOracleAddress = useMemo(() => priceOracles[56][USDC.address], [])
+  // PNDA-BUSD
+  const [, pair3] = usePair(PNDA, BUSD)
+  const busdUsdOracleAddress = useMemo(() => priceOracles[56][BUSD.address], [])
 
-  // BAO-SUSHI
-  // const [, pair4] = usePair(PNDA, SUSHI)
-  // const sushiUsdOracleAddress = useMemo(() => priceOracles[56][SUSHI.address], [])
+  // PNDA-DAI
+  const [, pair4] = usePair(PNDA, DAI)
+  const daiUsdOracleAddress = useMemo(() => priceOracles[56][DAI.address], [])
 
-  const allPriceOracles = [xDaiUsdOracleAddress, wethUsdOracleAddress]
+  const [, pair5] = usePair(PNDA, ETH)
+  const ethUsdOracleAddress = useMemo(() => priceOracles[56][ETH.address], [])
 
-  const allPairs = useMemo(() => [pair1, pair2], [pair1, pair2])
+  const allPriceOracles = [
+    xDaiUsdOracleAddress,
+    wethUsdOracleAddress,
+    busdUsdOracleAddress,
+    daiUsdOracleAddress,
+    ethUsdOracleAddress,
+  ]
+
+  const allPairs = useMemo(() => [pair1, pair2, pair3, pair4, pair5], [pair1, pair2, pair3, pair4, pair5])
 
   const priceRawResults = useMultipleContractSingleData(
     allPriceOracles,
@@ -61,10 +70,8 @@ export const useBaoUsdPrice = (): Fraction | undefined => {
       }
       const priceOfBao = pair.priceOf(PNDA)
       const priceRaw: BigNumber | undefined = priceRawResults[i].result?.[1]
-      const decimals: BigNumber | undefined = decimalsResults[i].result?.[0]
-      const decimated = decimals
-        ? JSBI.exponentiate(ten, JSBI.subtract(JSBI.BigInt(decimals.toString()), JSBI.BigInt(1)))
-        : undefined
+      const decimals: number | undefined = decimalsResults[i].result?.[0]
+      const decimated = decimals ? JSBI.exponentiate(ten, JSBI.BigInt(decimals)) : undefined
       const chainFraction = priceRaw && decimated ? new Fraction(JSBI.BigInt(priceRaw), decimated) : undefined
       return chainFraction ? chainFraction.multiply(priceOfBao) : undefined
     })
@@ -73,7 +80,6 @@ export const useBaoUsdPrice = (): Fraction | undefined => {
     const averagePrice = validPrices
       .reduce((sum, current) => sum.add(current), new Fraction(JSBI.BigInt(0)))
       .divide(JSBI.BigInt(validPrices.length))
-      .divide(JSBI.BigInt(10)) // not sure why this is needed
 
     return averagePrice
   }, [allPairs, decimalsResults, priceRawResults])
@@ -200,7 +206,7 @@ export function useAllStakedTVL(
       const decimals: string | undefined = decimalsResults[i].result?.[0]
 
       const decimated = decimals ? JSBI.exponentiate(ten, JSBI.BigInt(decimals.toString())) : undefined
-      const fetchedPriceInUsd = isUsingBaoUsdPrice ? baoPriceUsd?.divide(JSBI.BigInt(10)) : undefined
+      const fetchedPriceInUsd = isUsingBaoUsdPrice ? baoPriceUsd : undefined
 
       const chainFraction = priceRaw && decimated ? new Fraction(JSBI.BigInt(priceRaw), decimated) : undefined
       const priceInUsd = fetchedPriceInUsd ? fetchedPriceInUsd : chainFraction

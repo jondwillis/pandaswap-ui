@@ -12,6 +12,9 @@ type ChainTokenList = {
 
 export const USDC = new Token(ChainId.XDAI, '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', 6, 'USDC', 'USDC on xDai')
 export const PNDA = new Token(ChainId.XDAI, '0x47DcC83a14aD53Ed1f13d3CaE8AA4115f07557C0', 18, 'PNDA', 'Panda')
+export const BUSD = new Token(ChainId.XDAI, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'BUSD')
+export const DAI = new Token(ChainId.XDAI, '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3', 18, 'DAI', 'DAI')
+export const ETH = new Token(ChainId.XDAI, '0x2170ed0880ac9a755fd29b2688956bd959f933f8', 18, 'ETH', 'ETH')
 export const XDAI_WETH = new Token(ChainId.XDAI, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'BNB', 'Wrapped BNB')
 
 const WETH_ONLY: ChainTokenList = {
