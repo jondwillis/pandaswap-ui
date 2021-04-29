@@ -11,6 +11,7 @@ import { ExternalLink, StyledInternalLink } from '../../theme'
 import { PoolInfoFarmablePool } from '../../data/Reserves'
 import Logo from '../Logo'
 import { Fraction, Percent } from 'uniswap-bsc-sdk'
+import APYTooltip from '../APYTooltip'
 
 interface FarmAnalyticsCardProps {
 	farmablePool: PoolInfoFarmablePool
@@ -59,7 +60,17 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 						>
 							{apy?.greaterThan('0') && !farmablePool.isSushi && (
 								<StyledInternalLink to="/analytics">
-									{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+									<APYTooltip
+										element={
+											<>
+												{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+											</>
+										}
+										text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
+											.divide(new Fraction('1461', '4'))
+											.divide('20')
+											.toFixed(2, {})}% unlocked) per day`}
+									/>
 								</StyledInternalLink>
 							)}
 							{tvl && !farmablePool.isSushi && (

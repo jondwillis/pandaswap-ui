@@ -17,6 +17,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { StyledInternalLink } from '../../theme'
 import { FarmablePool } from '../../constants/bao'
 import Logo from '../Logo'
+import APYTooltip from '../APYTooltip'
 
 export const FixedHeightRow = styled(RowBetween)`
 	height: 24px;
@@ -85,7 +86,17 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 							<AutoColumn gap="4px">
 								{apy?.greaterThan('0') && !farmablePool.isSushi && (
 									<StyledInternalLink to="/analytics">
-										{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+										<APYTooltip
+											element={
+												<>
+													{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+												</>
+											}
+											text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
+												.divide(new Fraction('1461', '4'))
+												.divide('20')
+												.toFixed(2, {})}% unlocked) per day`}
+										/>
 									</StyledInternalLink>
 								)}
 								<ButtonSecondary

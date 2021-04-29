@@ -20,6 +20,7 @@ import Logo from '../Logo'
 import { useStakedTVL } from '../../hooks/TVL'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { FarmState, initialFarmState } from '../../state/farm/reducer'
+import APYTooltip from '../APYTooltip'
 
 interface FarmCardProps {
 	farmablePool: UserInfoFarmablePool
@@ -135,7 +136,17 @@ export function FarmPositionCard({
 						>
 							{apy?.greaterThan('0') && !farmablePool.isSushi && (
 								<StyledInternalLink to="/analytics">
-									{apy.toFixed(0, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+									<APYTooltip
+										element={
+											<>
+												{apy.toFixed(2, {})}% <span style={{ flexShrink: 1, fontSize: '7pt' }}> APY</span>
+											</>
+										}
+										text={`${apy.divide(new Fraction('1461', '4')).toFixed(2, {})}% (${apy
+											.divide(new Fraction('1461', '4'))
+											.divide('20')
+											.toFixed(2, {})}% unlocked) per day`}
+									/>
 								</StyledInternalLink>
 							)}
 							{yourStakeTVL && (
