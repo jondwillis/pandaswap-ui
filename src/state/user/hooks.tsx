@@ -16,6 +16,7 @@ import {
 	updateUserDarkMode,
 	updateUserDeadline,
 	updateUserExpertMode,
+	updateUserSkipHarvestThreshold,
 	updateUserSlippageTolerance,
 	updateUserSortByAPY,
 } from './actions'
@@ -68,6 +69,26 @@ export function useSortByAPYManager(): [boolean, () => void] {
 	}, [sortByAPY, dispatch])
 
 	return [sortByAPY, toggleSetSortByAPY]
+}
+
+export function useSkipHarvestThreshold(): number {
+	return useSelector<AppState, AppState['user']['userSkipHarvestThreshold']>((state) => {
+		return state.user.userSkipHarvestThreshold
+	})
+}
+
+export function useSkipHarvestThresholdManager(): [number, (threshold: number) => void] {
+	const dispatch = useDispatch<AppDispatch>()
+	const skipHarvestThreshold = useSkipHarvestThreshold()
+
+	const setSkipHarvestThreshold = useCallback(
+		(threshold) => {
+			dispatch(updateUserSkipHarvestThreshold({ userSkipHarvestThreshold: threshold }))
+		},
+		[dispatch]
+	)
+
+	return [skipHarvestThreshold, setSkipHarvestThreshold]
 }
 
 export function useDarkModeManager(): [boolean, () => void] {

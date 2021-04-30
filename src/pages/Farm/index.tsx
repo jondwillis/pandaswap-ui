@@ -43,6 +43,8 @@ import AppBody from '../AppBody'
 import { PoolBody } from '../Pool'
 import { usePoolProps } from '../../hooks/Pool'
 import { useAllTotalSupply } from '../../data/TotalSupply'
+import Input from '../../components/NumericalInput'
+import { useSkipHarvestThresholdManager } from '../../state/user/hooks'
 
 export default function Farm() {
 	const theme = useContext(ThemeContext)
@@ -84,9 +86,23 @@ export default function Farm() {
 
 	// redux farm state
 
+	const [skipHarvestThreshold, setSkipHarvestThreshold] = useSkipHarvestThresholdManager()
+
+	const onSkipThresholdInput = (input: string) => {
+		setSkipHarvestThreshold(Number.parseFloat(input) || 0)
+	}
+
 	const [{ attemptingHarvest }, setFarmState] = useState<FarmState>(initialFarmState)
 
-	const { callback } = useHarvestAll(useMemo(() => userInfo, [userInfo]))
+	const { callback } = useHarvestAll(
+		useMemo(() => {
+			return userInfo.filter(({ pendingReward }) =>
+				pendingReward
+					.multiply(new Fraction('1', '20'))
+					.greaterThan(new Fraction((skipHarvestThreshold || 0).toFixed(0), '1'))
+			)
+		}, [userInfo, skipHarvestThreshold])
+	)
 	const handleHarvestAll = useCallback(() => {
 		if (!callback) {
 			return
@@ -213,12 +229,29 @@ export default function Farm() {
 					<AutoColumn gap="12px" style={{ width: '100%' }}>
 						{chainId && masterChefContract && (
 							<RowBetween padding={'0 8px'}>
-								<ExternalLink id="link" href={getEtherscanLink(chainId, masterChefContract.address, 'address')}>
-									PandaMasterFarmer Contract
-									<TYPE.body color={theme.text3}>
-										<b title={masterChefContract.address}>{shortenAddress(masterChefContract.address)} ↗</b>
-									</TYPE.body>
-								</ExternalLink>
+								<AutoColumn gap="24px">
+									<ExternalLink id="link" href={getEtherscanLink(chainId, masterChefContract.address, 'address')}>
+										PandaMasterFarmer Contract
+										<TYPE.body color={theme.text3}>
+											<b title={masterChefContract.address}>{shortenAddress(masterChefContract.address)} ↗</b>
+										</TYPE.body>
+									</ExternalLink>
+
+									{baocxBalance?.greaterThan('1') ? (
+										<RowBetween>
+											<ButtonSecondary padding="0.5rem" as={Link} to={`swap/${PNDA.address}`}>
+												<Text>Swap</Text>
+												<BalanceText color={theme.text1} paddingLeft={1}>
+													{baocxBalance.toFixed(0, {})}
+												</BalanceText>{' '}
+												<Text paddingLeft={1}>{rewardToken.symbol}</Text>
+												<ChevronRight />
+											</ButtonSecondary>
+										</RowBetween>
+									) : (
+										''
+									)}
+								</AutoColumn>
 
 								<AutoColumn gap="6px" style={{ marginTop: '6px' }}>
 									<RowBetween>
@@ -236,7 +269,9 @@ export default function Farm() {
 												</span>
 											) : (
 												<span>
-													<Text fontWeight={700}>Harvest All</Text>
+													<Text color={theme.primaryText1} fontWeight={700}>
+														Harvest All
+													</Text>
 													<BalanceText style={{ flexShrink: 0, textAlign: 'end' }} pr="0.5rem" fontWeight={500}>
 														&nbsp;&nbsp;
 														<UnlockIcon size="14px" /> <b>{unlockedPending?.toFixed(0) || '-'} </b>
@@ -249,16 +284,17 @@ export default function Farm() {
 											)}
 										</ButtonPrimary>
 									</RowBetween>
-									{baocxBalance?.greaterThan('0') ? (
+									<LightCard>
 										<RowBetween>
-											<ButtonSecondary padding="0.5rem" as={Link} to={`swap/${PNDA.address}`}>
-												<Text fontWeight={600}>Swap {PNDA.symbol}</Text>
-												<ChevronRight />
-											</ButtonSecondary>
+											<Text color={theme.primary1} fontSize="8pt">
+												Harvest farms with ≥:
+											</Text>
 										</RowBetween>
-									) : (
-										''
-									)}
+										<RowBetween>
+											<Input value={skipHarvestThreshold} onUserInput={onSkipThresholdInput}></Input>
+											<Text fontSize="8pt">{rewardToken.symbol ?? ''}</Text>
+										</RowBetween>
+									</LightCard>
 								</AutoColumn>
 							</RowBetween>
 						)}

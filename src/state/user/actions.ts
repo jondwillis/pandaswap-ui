@@ -28,3 +28,7 @@ export const removeSerializedPair = createAction<{ chainId: number; tokenAAddres
 )
 
 export const updateUserSortByAPY = createAction<{ userSortByAPY: boolean }>('user/updateSortByAPY')
+
+export const updateUserSkipHarvestThreshold = createAction<{ userSkipHarvestThreshold: number }>(
+  'user/updateSkipHarvestThreshold'
+)

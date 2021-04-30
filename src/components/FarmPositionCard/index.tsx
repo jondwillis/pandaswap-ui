@@ -177,7 +177,7 @@ export function FarmPositionCard({
 									</span>
 								) : (
 									<span>
-										<Text color={theme.text5} fontWeight={600}>
+										<Text color={theme.primaryText1} fontWeight={600}>
 											Harvest
 										</Text>
 										<BalanceText style={{ flexShrink: 0, textAlign: 'end' }} pr="0.5rem" fontWeight={800}>

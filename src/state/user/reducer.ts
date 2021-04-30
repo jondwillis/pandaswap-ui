@@ -14,6 +14,7 @@ import {
   updateUserSlippageTolerance,
   updateUserDeadline,
   updateUserSortByAPY,
+  updateUserSkipHarvestThreshold,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -49,6 +50,8 @@ export interface UserState {
   timestamp: number
 
   userSortByAPY: boolean | null // the user's choice for sorting by APYs
+
+  userSkipHarvestThreshold: number
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -65,6 +68,7 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   userSortByAPY: false,
+  userSkipHarvestThreshold: 100,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -136,5 +140,8 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateUserSortByAPY, (state, action) => {
       state.userSortByAPY = action.payload.userSortByAPY
       state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserSkipHarvestThreshold, (state, action) => {
+      state.userSkipHarvestThreshold = action.payload.userSkipHarvestThreshold
     })
 )
