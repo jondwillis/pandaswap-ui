@@ -108,6 +108,7 @@ export const addressMap = {
   BUNNY: '0xc9849e6fdb743d08faee3e34dd2d1bc69ea11a51',
   BAMBOO: '0xEF88e0d265dDC8f5E725a4fDa1871F9FE21B11E2',
   RHINO: '0xD2ECa3cff5F09Cfc9C425167d12F0a005Fc97c8c',
+  BUSDT: '0x55d398326f99059ff775485246999027b3197955',
 }
 
 interface DescribesToken {
@@ -203,6 +204,7 @@ const tokenMap = {
   BUNNY: new TokenDescriptor('0xc9849e6fdb743d08faee3e34dd2d1bc69ea11a51', '', 18),
   BAMBOO: new TokenDescriptor('0xEF88e0d265dDC8f5E725a4fDa1871F9FE21B11E2', '', 18),
   RHINO: new TokenDescriptor('0xD2ECa3cff5F09Cfc9C425167d12F0a005Fc97c8c', '', 9),
+  BUSDT: new TokenDescriptor('0x55d398326f99059ff775485246999027b3197955', 'BUSD-T', 18),
 }
 
 // non-address looksups can be used to fetchPrice
@@ -219,7 +221,6 @@ export const priceOracles = {
     [addressMap.CAKE]: '0xB6064eD41d4f67e353768aA239cA86f4F73665a1',
     [addressMap.UNI]: '0xb57f259E7C24e56a1dA00F66b55A5640d9f9E7e4',
     [addressMap.VAI]: '0x058316f8Bb13aCD442ee7A216C7b60CFB4Ea1B53',
-    [addressMap.vUSDT]: '0xB97Ad0E74fa7d920791E90258A6E2085088b4320',
   },
 }
 
@@ -1487,7 +1488,7 @@ export const supportedPools: SupportedPool[] = [
       56: '0x7EFaEf62fDdCCa950418312c6C91Aef321375A00',
     },
     tokenAddresses: {
-      56: [tokenMap.BUSD, tokenMap.vUSDT],
+      56: [tokenMap.BUSDT, tokenMap.BUSD],
     },
     tokenDecimals: 18,
     name: 'USDT-BUSD',
@@ -1503,7 +1504,7 @@ export const supportedPools: SupportedPool[] = [
       56: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE',
     },
     tokenAddresses: {
-      56: [tokenMap.vUSDT, tokenMap.BNB],
+      56: [tokenMap.BUSDT, tokenMap.BNB],
     },
     tokenDecimals: 18,
     name: 'USDT Tofu',
@@ -1551,7 +1552,7 @@ export const supportedPools: SupportedPool[] = [
       56: '0x2354ef4DF11afacb85a5C7f98B624072ECcddbB1',
     },
     tokenAddresses: {
-      56: [tokenMap.BUSD, tokenMap.vUSDC],
+      56: [tokenMap.USDC, tokenMap.BUSD],
     },
     tokenDecimals: 18,
     name: 'USDC Crunch',
