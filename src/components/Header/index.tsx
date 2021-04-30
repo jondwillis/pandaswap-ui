@@ -6,7 +6,7 @@ import styled, { ThemeContext } from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
 
-import { useETHBalances } from '../../state/wallet/hooks'
+import { useGasBalances } from '../../state/wallet/hooks'
 
 import { YellowCard } from '../Card'
 import Settings from '../Settings'
@@ -181,7 +181,7 @@ export default function Header() {
 	const theme = useContext(ThemeContext)
 	const { account, chainId, active, error } = useActiveWeb3React()
 
-	const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+	const userEthBalance = useGasBalances(account ? [account] : [])?.[account ?? '']
 
 	return (
 		<HeaderFrame>
@@ -237,7 +237,6 @@ export default function Header() {
 						</TestnetWrapper>
 					</HeaderElement>
 					<HeaderElementWrap>
-						{/* <VersionSwitch />*/}
 						<Settings />
 						<Menu />
 					</HeaderElementWrap>

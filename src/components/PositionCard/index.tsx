@@ -53,8 +53,8 @@ interface PositionCardProps {
 export function MinimalPositionCard({ pair, showUnwrapped = false, border }: PositionCardProps) {
 	const { account } = useActiveWeb3React()
 
-	const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
-	const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
+	const currency0 = showUnwrapped ? unwrappedToken(pair.token0) : pair.token0
+	const currency1 = showUnwrapped ? unwrappedToken(pair.token1) : pair.token1
 
 	const [showMore, setShowMore] = useState(false)
 

@@ -6,11 +6,12 @@ import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { XDAI_WETH } from '../../constants'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
-export function useETHBalances(
+export function useGasBalances(
   uncheckedAddresses?: (string | undefined)[]
 ): { [address: string]: CurrencyAmount | undefined } {
   const multicallContract = useMulticallContract()
@@ -105,21 +106,32 @@ export const useTokenPairCandidates = (
   ])
   const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances])
 
+  const userGasBalance = useGasBalances(account ? [account] : [])?.[account ?? '']
+
   const almostZero = JSBI.BigInt('1')
   return [
     useMemo(
       () =>
         (balances &&
-          tpwlts.filter((_, i) => {
+          tpwlts.filter((tpwlt, i) => {
             const result0 = balances[i * 2]?.result?.[0]
             const result1 = balances[i * 2 + 1]?.result?.[0]
             const balance0 = result0 ? JSBI.BigInt(result0.toString()) : almostZero
             const balance1 = result1 ? JSBI.BigInt(result1.toString()) : almostZero
-
-            return JSBI.greaterThan(balance0, almostZero) && JSBI.greaterThan(balance1, almostZero)
+            const hasBalance0 = JSBI.greaterThan(balance0, almostZero)
+            const hasBalance1 = JSBI.greaterThan(balance1, almostZero)
+            if (hasBalance0 && hasBalance1) {
+              return true
+            } else if (tpwlt.tokens[0].equals(XDAI_WETH) && hasBalance0) {
+              return userGasBalance
+            } else if (tpwlt.tokens[1].equals(XDAI_WETH) && hasBalance0) {
+              return userGasBalance
+            } else {
+              return false
+            }
           })) ??
         [],
-      [balances, tpwlts, almostZero]
+      [balances, tpwlts, almostZero, userGasBalance]
     ),
     anyLoading,
   ]
@@ -149,7 +161,7 @@ export function useCurrencyBalances(
 
   const tokenBalances = useTokenBalances(account, tokens)
   const containsETH: boolean = useMemo(() => currencies?.some((currency) => currency === ETHER) ?? false, [currencies])
-  const ethBalance = useETHBalances(containsETH ? [account] : [])
+  const ethBalance = useGasBalances(containsETH ? [account] : [])
 
   return useMemo(
     () =>

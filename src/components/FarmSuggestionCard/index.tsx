@@ -1,4 +1,4 @@
-import { Fraction, Pair } from 'uniswap-bsc-sdk'
+import { ETHER, Fraction, Pair } from 'uniswap-bsc-sdk'
 import { darken } from 'polished'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -12,7 +12,7 @@ import { ButtonSecondary } from '../Button'
 import Card from '../Card'
 import { AutoColumn } from '../Column'
 import { RowBetween, RowFixed } from '../Row'
-import { useTokenBalance } from '../../state/wallet/hooks'
+import { useGasBalances, useTokenBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { StyledInternalLink } from '../../theme'
 import { FarmablePool } from '../../constants/bao'
@@ -48,15 +48,19 @@ interface PositionCardProps {
 export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = true, border }: PositionCardProps) {
 	const { account } = useActiveWeb3React()
 
-	const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
-	const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
+	const currency0 = showUnwrapped ? unwrappedToken(pair.token0) : pair.token0
+	const currency1 = showUnwrapped ? unwrappedToken(pair.token1) : pair.token1
 
 	const { token0, token1 } = pair
 
 	const [showMore, setShowMore] = useState(false)
 
-	const token0Balance = useTokenBalance(account ?? undefined, token0)
-	const token1Balance = useTokenBalance(account ?? undefined, token1)
+	const gasBalance = useGasBalances(account ? [account] : [])?.[account ?? '']
+
+	const underlyingTokenBalance0 = useTokenBalance(account ?? undefined, token0)
+	const underlyingTokenBalance1 = useTokenBalance(account ?? undefined, token1)
+	const token0Balance = showUnwrapped && currency0 === ETHER ? gasBalance : underlyingTokenBalance0
+	const token1Balance = showUnwrapped && currency1 === ETHER ? gasBalance : underlyingTokenBalance1
 
 	return (
 		<>
@@ -120,7 +124,7 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 							{token0Balance ? (
 								<RowFixed>
 									<Text color="#888D9B" fontSize={16} fontWeight={500} marginLeft={'6px'}>
-										{token0Balance?.toSignificant(6)}
+										{token0Balance.toSignificant(6)}
 									</Text>
 								</RowFixed>
 							) : (
@@ -134,7 +138,7 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 							{token1Balance ? (
 								<RowFixed>
 									<Text color="#888D9B" fontSize={16} fontWeight={500} marginLeft={'6px'}>
-										{token1Balance?.toSignificant(6)}
+										{token1Balance.toSignificant(6)}
 									</Text>
 								</RowFixed>
 							) : (

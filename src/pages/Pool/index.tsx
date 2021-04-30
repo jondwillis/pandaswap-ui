@@ -55,7 +55,7 @@ export function PoolBody({
 					{allPairCandidatesWithLiquidity.map((pfp, i) => {
 						return pfp && pfp.pair.liquidityToken.address ? (
 							<FarmSuggestionCard
-								key={`suggest- ${pfp.pair.liquidityToken.address}`}
+								key={`suggest- ${pfp.pair.liquidityToken.address}-${pfp.pair.token0.address}-${pfp.pair.token1.address}`}
 								pair={pfp.pair}
 								farmablePool={pfp.farmablePool}
 								apy={allAPYs[i]}
