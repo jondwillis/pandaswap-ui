@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ChainId, Fraction, JSBI, Token, TokenAmount, WETH } from 'uniswap-bsc-sdk'
 import { useActiveWeb3React } from '.'
 import { FarmablePool, priceOracles } from '../constants/bao'
-import { usePair, usePairs, useRewardToken } from '../data/Reserves'
+import { usePair, usePairs, usePancakePairs, useRewardToken } from '../data/Reserves'
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
@@ -14,7 +14,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useAllTotalSupply } from '../data/TotalSupply'
 import { useAllStakedAmounts } from '../data/Staked'
 import { CHAINLINK_PRICE_ORACLE_INTERFACE, usePriceOracleContract } from '../constants/abis/Chainlink'
-
+import { Token as PancakeToken } from '@pancakeswap-libs/sdk-v2'
 export const blocksPerYear = JSBI.BigInt(10519200) // (31556952 = (seconds / year)) / (3 second/block) = 10518984.4
 
 const ten = JSBI.BigInt(10)
@@ -187,23 +187,50 @@ export function useAllStakedTVL(
     () => priceOracleDescriptors.map((pod): [Token | undefined, Token | undefined] => [pod.token0, pod.token1]),
     [priceOracleDescriptors]
   )
+  const pancakeTokenPairs: [PancakeToken | undefined, PancakeToken | undefined][] = useMemo(
+    () =>
+      priceOracleDescriptors.map((pod): [PancakeToken | undefined, PancakeToken | undefined] => [
+        pod.token0
+          ? new PancakeToken(pod.token0.chainId.valueOf(), pod.token0.address, pod.token0.decimals)
+          : undefined,
+        pod.token1
+          ? new PancakeToken(pod.token1.chainId.valueOf(), pod.token1.address, pod.token1.decimals)
+          : undefined,
+      ]),
+    [priceOracleDescriptors]
+  )
   const pairs = usePairs(tokenPairs)
+  const pancakePairs = usePancakePairs(pancakeTokenPairs)
 
   return useMemo(() => {
     return priceOracleDescriptors.map((pod, i) => {
       const { priceOracleBaseToken, isUsingBaoUsdPrice } = pod
+      const pancakePriceOracleBaseToken = priceOracleBaseToken
+        ? new PancakeToken(
+            priceOracleBaseToken.chainId.valueOf(),
+            priceOracleBaseToken.address,
+            priceOracleBaseToken.decimals
+          )
+        : undefined
       const [token0, token1] = tokenPairs[i]
       const isSingleSided = token0?.address === token1?.address
       const ratioStaked = ratiosStaked[i]
       const [, pair] = pairs[i]
+      const [, pancakePair] = pancakePairs[i]
+      const isSushi = farmablePools[i].isSushi
       const stakedAmount = stakedAmounts[i]
 
-      const pricedInReserveFn = () => {
-        const usingReserve = pair?.reserveOf(!isUsingBaoUsdPrice && priceOracleBaseToken ? priceOracleBaseToken : PNDA)
-        return usingReserve
-      }
+      const reserveToken = !isUsingBaoUsdPrice && priceOracleBaseToken ? priceOracleBaseToken : PNDA
+      const pancakeReserveToken = pancakePriceOracleBaseToken
 
-      const pricedInReserve = isSingleSided ? stakedAmount : pricedInReserveFn()
+      const pricedInReserve = isSingleSided
+        ? stakedAmount
+        : isSushi && pancakePair && pancakeReserveToken
+        ? pancakePair?.reserveOf(pancakeReserveToken)
+        : pair?.reserveOf(reserveToken)
+
+      const pricedInReserveFraction =
+        pricedInReserve && new Fraction(pricedInReserve.numerator, pricedInReserve.denominator)
 
       const priceRaw: string | undefined = rawPriceResults[i].result?.[1]
       const decimals: string | undefined = decimalsResults[i].result?.[0]
@@ -213,20 +240,25 @@ export function useAllStakedTVL(
 
       const chainFraction = priceRaw && decimated ? new Fraction(JSBI.BigInt(priceRaw), decimated) : undefined
       const priceInUsd = fetchedPriceInUsd ? fetchedPriceInUsd : chainFraction
+      // console.log(priceOracleBaseToken?.symbol, 'pricedInUsd: ', priceInUsd?.toSignificant(8))
       const tvl =
-        priceInUsd && pricedInReserve && priceInUsd.multiply(pricedInReserve).multiply(isSingleSided ? '1' : '2')
+        priceInUsd &&
+        pricedInReserveFraction &&
+        priceInUsd.multiply(pricedInReserveFraction).multiply(isSingleSided ? '1' : '2')
       const stakedTVL = tvl ? (isSingleSided ? tvl : ratioStaked?.multiply(tvl)) : undefined
-      return stakedTVL
+      return tvl?.greaterThan('1') ? stakedTVL : undefined
     })
   }, [
-    baoPriceUsd,
-    decimalsResults,
-    pairs,
     priceOracleDescriptors,
-    rawPriceResults,
-    ratiosStaked,
     tokenPairs,
+    ratiosStaked,
+    pairs,
+    pancakePairs,
+    farmablePools,
     stakedAmounts,
+    rawPriceResults,
+    decimalsResults,
+    baoPriceUsd,
   ])
 }
 

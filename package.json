@@ -4,6 +4,7 @@
   "homepage": ".",
   "private": true,
   "devDependencies": {
+    "@pancakeswap-libs/sdk-v2": "^2.2.0",
     "@binance-chain/bsc-connector": "^1.0.0",
     "@ethersproject/experimental": "^5.0.1",
     "@popperjs/core": "^2.4.4",
@@ -105,6 +106,5 @@
       "last 1 safari version"
     ]
   },
-  "license": "GPL-3.0-or-later",
-  "dependencies": {}
+  "license": "GPL-3.0-or-later"
 }

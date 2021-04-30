@@ -92,7 +92,7 @@ export function FarmSuggestionCard({ pair, farmablePool, apy, showUnwrapped = tr
 								justify="end"
 								style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end' }}
 							>
-								{apy?.greaterThan('0') && !farmablePool.isSushi && (
+								{apy?.greaterThan('0') && (
 									<APYTooltip
 										element={
 											<StyledInternalLink to="/analytics">

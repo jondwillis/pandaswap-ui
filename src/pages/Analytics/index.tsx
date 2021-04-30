@@ -41,7 +41,7 @@ export default function Analytics() {
 	const [poolInfo, fetchingPoolInfo] = usePoolInfoFarmablePools(allFarmablePools, allNewRewardPerBlock)
 
 	const [searchQuery, setSearchQuery] = useState('')
-	const [filterPoolType, setFilterPoolType] = useState<'all' | 'pancake' | 'panda'>('panda')
+	const [filterPoolType, setFilterPoolType] = useState<'all' | 'pancake' | 'panda'>('all')
 
 	const query = useDebounce(
 		useMemo(() => searchQuery.toLowerCase(), [searchQuery]),
@@ -143,7 +143,6 @@ export default function Analytics() {
 						Filter Pool Type:
 						<RowFixed>
 							<Option
-								style={{ display: 'none' }}
 								onClick={() => {
 									handleFilterPoolType('all')
 								}}
@@ -155,7 +154,6 @@ export default function Analytics() {
 								ALL
 							</Option>
 							<Option
-								style={{ display: 'none' }}
 								onClick={() => {
 									handleFilterPoolType('pancake')
 								}}

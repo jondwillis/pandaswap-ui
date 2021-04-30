@@ -58,7 +58,7 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 							justify="end"
 							style={{ minWidth: '5rem', alignContent: 'baseline', textAlign: 'end', paddingRight: '0.5rem' }}
 						>
-							{apy?.greaterThan('0') && !farmablePool.isSushi && (
+							{tvl?.greaterThan('1') && apy?.greaterThan('0') && (
 								<APYTooltip
 									element={
 										<StyledInternalLink to="/analytics">
@@ -71,7 +71,7 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 										.toFixed(2, {})}% unlocked) per day`}
 								/>
 							)}
-							{tvl && !farmablePool.isSushi && (
+							{tvl?.greaterThan('1') && (
 								<RowFixed>
 									<BalanceText>{`$${tvl.toFixed(2, {})}`}</BalanceText>
 									<Text fontSize="7pt" paddingTop="3.5pt" paddingLeft="3pt">
@@ -110,7 +110,7 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 							</RowFixed>
 							<RowFixed>
 								<Text fontSize={16} fontWeight={500}>
-									{totalSupply ? totalSupply.toSignificant(8, {}) : '-'}
+									{totalSupply ? totalSupply.toFixed(4, {}) : '-'}
 								</Text>
 							</RowFixed>
 						</FixedHeightRow>
@@ -124,7 +124,7 @@ export function FarmAnalyticsCard({ farmablePool, apy, tvl, border, defaultShowM
 								<Text fontSize={16} fontWeight={500}>
 									{stakedAmount &&
 										totalSupply &&
-										`${stakedAmount.toSignificant(8, {})} (${new Percent(stakedAmount.raw, totalSupply.raw).toFixed(
+										`${stakedAmount.toFixed(4, {})} (${new Percent(stakedAmount.raw, totalSupply.raw).toFixed(
 											2,
 											{}
 										)}%)`}

@@ -134,7 +134,7 @@ export function FarmPositionCard({
 								</Text>
 							</RowFixed>
 							<RowFixed marginTop={2}>
-								{apy?.greaterThan('0') && !farmablePool.isSushi && (
+								{yourStakeTVL?.greaterThan('1') && apy?.greaterThan('0') && (
 									<APYTooltip
 										element={
 											<StyledInternalLink to="/analytics">
@@ -148,7 +148,7 @@ export function FarmPositionCard({
 									/>
 								)}
 							</RowFixed>
-							{yourStakeTVL && !farmablePool.isSushi && (
+							{yourStakeTVL?.greaterThan('1') && (
 								<RowFixed>
 									<BalanceText>{`$${yourStakeTVL.toFixed(2, {})}`}</BalanceText>
 									<span style={{ flexShrink: 1, fontSize: '7pt', paddingTop: '3.5pt', paddingLeft: '3pt' }}>
