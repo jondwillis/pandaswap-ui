@@ -26,8 +26,7 @@ export interface PoolProps {
 	v2PairsBalances: {
 		[tokenAddress: string]: TokenAmount | undefined
 	}
-	allPairCandidatesWithLiquidity: ({ pair: Pair; farmablePool: FarmablePool } | undefined)[]
-	allAPYs: (Fraction | undefined)[]
+	allPairCandidatesWithLiquidityAndAPY: { pair: Pair; farmablePool: FarmablePool; apy: Fraction | undefined }[]
 	baoPriceUsd: Fraction | undefined
 }
 
@@ -35,15 +34,14 @@ export function PoolBody({
 	v2IsLoading,
 	allV2PairsWithLiquidity,
 	v2PairsBalances,
-	allPairCandidatesWithLiquidity,
-	allAPYs,
+	allPairCandidatesWithLiquidityAndAPY,
 	baoPriceUsd,
 }: PoolProps) {
 	const theme = useContext(ThemeContext)
 	const { account } = useActiveWeb3React()
 	return (
 		<AutoColumn gap="12px" style={{ width: '100%' }}>
-			{allPairCandidatesWithLiquidity?.length > 0 && (
+			{allPairCandidatesWithLiquidityAndAPY.length > 0 && (
 				<>
 					<RowBetween padding={'0 8px'}>
 						<Text color={theme.text1} fontWeight={500}>
@@ -52,13 +50,13 @@ export function PoolBody({
 						<Question text="These liquidity pools are shown because you have a balance in both tokens in the pair, and the LP can be staked." />
 					</RowBetween>
 
-					{allPairCandidatesWithLiquidity.map((pfp, i) => {
+					{allPairCandidatesWithLiquidityAndAPY.map((pfp, i) => {
 						return pfp && pfp.pair.liquidityToken.address ? (
 							<FarmSuggestionCard
 								key={`suggest- ${pfp.pair.liquidityToken.address}-${pfp.pair.token0.address}-${pfp.pair.token1.address}`}
 								pair={pfp.pair}
 								farmablePool={pfp.farmablePool}
-								apy={allAPYs[i]}
+								apy={pfp.apy}
 								baoPriceUsd={baoPriceUsd}
 							/>
 						) : (
