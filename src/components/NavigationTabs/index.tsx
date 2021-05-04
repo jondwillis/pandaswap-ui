@@ -67,7 +67,7 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' | 'a
 				{t('farm')}
 			</StyledNavLink>
 			<StyledNavLink id={`analytics-nav-link`} to={'/analytics'} isActive={() => active === 'analytics'}>
-				{t('analytics ')}
+				{t('analytics')}
 			</StyledNavLink>
 			<>
 				<StyledExternalLink href={'https://farms.pandaswap.xyz/staking'}>
