@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency, Token, ChainId, JSBI } from 'uniswap-bsc-sdk'
+import { TokenAmount, Pair, Currency, Token, ChainId, JSBI, Percent } from 'uniswap-bsc-sdk'
 import { useMemo } from 'react'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'
@@ -23,6 +23,20 @@ export enum PairState {
   NOT_EXISTS,
   EXISTS,
   INVALID,
+}
+
+export interface UserInfoFarmablePool extends FarmablePool {
+  stakedAmount: TokenAmount
+  pendingReward: TokenAmount
+  userFeeStage: Percent
+}
+
+export interface PoolInfoFarmablePool extends FarmablePool {
+  stakedAmount: TokenAmount
+  totalSupply: TokenAmount
+  accBaoPerShare: TokenAmount
+  newRewardPerBlock: JSBI
+  poolWeight: JSBI
 }
 
 export function usePairs(
@@ -129,12 +143,6 @@ export function useRewardToken(): Token {
   return PNDA
 }
 
-export interface UserInfoFarmablePool extends FarmablePool {
-  stakedAmount: TokenAmount
-  pendingReward: TokenAmount
-  userDelta: JSBI
-}
-
 export function useUserInfoFarmablePools(pairFarmablePools: FarmablePool[]): [UserInfoFarmablePool[], boolean] {
   const { account } = useActiveWeb3React()
   const masterChefContract = useMasterChefContract()
@@ -152,8 +160,7 @@ export function useUserInfoFarmablePools(pairFarmablePools: FarmablePool[]): [Us
   const results = useSingleContractMultipleData(masterChefContract, 'userInfo', poolIdsAndLpTokens)
   const pendingRewardResults = useSingleContractMultipleData(masterChefContract, 'pendingReward', poolIdsAndLpTokens)
   const anyLoading: boolean = useMemo(
-    () => 
-    results.some((callState) => callState.loading) || pendingRewardResults.some((callState) => callState.loading),
+    () => results.some((callState) => callState.loading) || pendingRewardResults.some((callState) => callState.loading),
     [results, pendingRewardResults]
   )
 
@@ -162,39 +169,55 @@ export function useUserInfoFarmablePools(pairFarmablePools: FarmablePool[]): [Us
       .map((farmablePool, i) => {
         const stakedAmountResult = results?.[i]?.result?.[0]
         const pendingReward = pendingRewardResults?.[i]?.result?.[0]
-        const userDelta = results?.[i]?.result?.[5]
+        const userDelta: number | undefined = results?.[i]?.result?.[5]
+        const feeBookends = [
+          0,
+          0,
+          1,
+          1,
+          1201,
+          28800,
+          28801,
+          86400,
+          86401,
+          144000,
+          144001,
+          403200,
+          403201,
+          806400,
+          806401,
+        ]
+        const fees = [new Percent('100', '1'), new Percent('100', '1')]
+        const lastUserDeltaFeeBookendIndex = userDelta && feeBookends.findIndex((item) => (item < userDelta ? true : false))
+        let userFeeStage: Percent = new Percent('100', '1')
+        if (lastUserDeltaFeeBookendIndex) {
+          const feeIndex = (lastUserDeltaFeeBookendIndex % feeBookends.length) / 2
+          userFeeStage = fees[feeIndex]
+        }
         const mergeObject =
           stakedAmountResult && pendingReward && userDelta
             ? {
                 stakedAmount: new TokenAmount(farmablePool.token, stakedAmountResult),
                 pendingReward: new TokenAmount(baoRewardToken, pendingReward),
-                userDelta: JSBI.BigInt(userDelta)
+                userFeeStage,
               }
             : {
                 stakedAmount: new TokenAmount(farmablePool.token, '0'),
                 pendingReward: new TokenAmount(baoRewardToken, '0'),
-                userDelta: JSBI.BigInt('0')
+                userFeeStage,
               }
 
         return {
           ...farmablePool,
           stakedAmount: mergeObject.stakedAmount,
           pendingReward: mergeObject.pendingReward,
-          userDelta: mergeObject.userDelta,
+          userFeeStage: mergeObject.userFeeStage,
         }
       })
       .filter(({ stakedAmount }) => stakedAmount.greaterThan('0'))
   }, [pairFarmablePools, results, pendingRewardResults, baoRewardToken])
 
   return [userInfoFarmablePool, anyLoading]
-}
-
-export interface PoolInfoFarmablePool extends FarmablePool {
-  stakedAmount: TokenAmount
-  totalSupply: TokenAmount
-  accBaoPerShare: TokenAmount
-  newRewardPerBlock: JSBI
-  poolWeight: JSBI
 }
 
 export function usePoolInfoFarmablePools(
