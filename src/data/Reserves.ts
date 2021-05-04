@@ -9,6 +9,7 @@ import { wrappedCurrency, wrappedPancakeCurrency } from '../utils/wrappedCurrenc
 import { useMasterChefContract } from '../hooks/useContract'
 import { FarmablePool } from '../constants/bao'
 import { PNDA } from '../constants'
+
 import {
   Pair as PancakePair,
   TokenAmount as PancakeTokenAmount,
@@ -131,6 +132,7 @@ export function useRewardToken(): Token {
 export interface UserInfoFarmablePool extends FarmablePool {
   stakedAmount: TokenAmount
   pendingReward: TokenAmount
+  userDelta: JSBI
 }
 
 export function useUserInfoFarmablePools(pairFarmablePools: FarmablePool[]): [UserInfoFarmablePool[], boolean] {
@@ -150,7 +152,8 @@ export function useUserInfoFarmablePools(pairFarmablePools: FarmablePool[]): [Us
   const results = useSingleContractMultipleData(masterChefContract, 'userInfo', poolIdsAndLpTokens)
   const pendingRewardResults = useSingleContractMultipleData(masterChefContract, 'pendingReward', poolIdsAndLpTokens)
   const anyLoading: boolean = useMemo(
-    () => results.some((callState) => callState.loading) || pendingRewardResults.some((callState) => callState.loading),
+    () => 
+    results.some((callState) => callState.loading) || pendingRewardResults.some((callState) => callState.loading),
     [results, pendingRewardResults]
   )
 
@@ -159,22 +162,25 @@ export function useUserInfoFarmablePools(pairFarmablePools: FarmablePool[]): [Us
       .map((farmablePool, i) => {
         const stakedAmountResult = results?.[i]?.result?.[0]
         const pendingReward = pendingRewardResults?.[i]?.result?.[0]
-
+        const userDelta = results?.[i]?.result?.[5]
         const mergeObject =
-          stakedAmountResult && pendingReward
+          stakedAmountResult && pendingReward && userDelta
             ? {
                 stakedAmount: new TokenAmount(farmablePool.token, stakedAmountResult),
                 pendingReward: new TokenAmount(baoRewardToken, pendingReward),
+                userDelta: JSBI.BigInt(userDelta)
               }
             : {
                 stakedAmount: new TokenAmount(farmablePool.token, '0'),
                 pendingReward: new TokenAmount(baoRewardToken, '0'),
+                userDelta: JSBI.BigInt('0')
               }
 
         return {
           ...farmablePool,
           stakedAmount: mergeObject.stakedAmount,
           pendingReward: mergeObject.pendingReward,
+          userDelta: mergeObject.userDelta,
         }
       })
       .filter(({ stakedAmount }) => stakedAmount.greaterThan('0'))
