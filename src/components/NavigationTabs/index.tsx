@@ -66,18 +66,29 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' | 'a
 			<StyledNavLink id={`farm-nav-link`} to={'/farm'} isActive={() => active === 'farm'}>
 				{t('farm')}
 			</StyledNavLink>
-			<StyledExternalLink href={'https://farms.pandaswap.xyz/staking'}>🎋</StyledExternalLink>
-			<StyledExternalLink href={'https://farms.pandaswap.xyz/rhino'}>🦏</StyledExternalLink>
+			<StyledNavLink id={`analytics-nav-link`} to={'/analytics'} isActive={() => active === 'analytics'}>
+				{t('analytics ')}
+			</StyledNavLink>
+			<>
+				<StyledExternalLink href={'https://farms.pandaswap.xyz/staking'}>
+					<span role="img" aria-label="Bamboo">
+						🎋
+					</span>
+				</StyledExternalLink>
+				<StyledExternalLink href={'https://farms.pandaswap.xyz/rhino'}>
+					<span role="img" aria-label="Rhino">
+						🦏
+					</span>
+				</StyledExternalLink>
+			</>
 		</Tabs>
 	)
 }
 
 const StyledExternalLink = styled(ExternalLink)`
-	font-size: 0.825rem;
 	color: ${({ theme }) => theme.text3};
-	margin-left: 1rem;
-	font-size: 0.825rem;
-	display: flex;
+	font-size: 1.5rem;
+	display: inline;
 	:hover {
 		color: ${({ theme }) => theme.text2};
 	}
