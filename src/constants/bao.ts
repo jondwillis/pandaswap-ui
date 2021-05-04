@@ -324,7 +324,7 @@ export const supportedPools: SupportedPool[] = [
     refUrl: 'https://pandaswap.xyz/#/swap?outputCurrency=0x47DcC83a14aD53Ed1f13d3CaE8AA4115f07557C0',
   },
   {
-    pid: 93,
+    pid: 92,
     lpAddresses: {
       56: '0x999fd87aA406adB81809bab15681f655d8a049FF',
     },
