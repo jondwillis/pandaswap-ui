@@ -324,7 +324,7 @@ export const supportedPools: SupportedPool[] = [
     refUrl: 'https://pandaswap.xyz/#/swap?outputCurrency=0x47DcC83a14aD53Ed1f13d3CaE8AA4115f07557C0',
   },
   {
-    pid: 92,
+    pid: 93,
     lpAddresses: {
       56: '0x999fd87aA406adB81809bab15681f655d8a049FF',
     },
@@ -335,6 +335,22 @@ export const supportedPools: SupportedPool[] = [
     name: 'Rhino Remoulade',
     symbol: 'RHINO-BNB PNDA-V2',
     tokenSymbol: 'RHINO',
+    icon: '/rhino.png',
+    refUrl: 'https://pandaswap.xyz/#/swap?outputCurrency=0xd2eca3cff5f09cfc9c425167d12f0a005fc97c8c',
+  },
+  {
+    pid: 94,
+    lpAddresses: {
+      56: '0x999fd87aA406adB81809bab15681f655d8a049FF',
+    },
+    tokenAddresses: {
+      56: [tokenMap.RHINO, tokenMap.BNB],
+    },
+    tokenDecimals: 9,
+    name: 'Rhino Remoulade',
+    symbol: 'RHINO-BNB CAKELP',
+    tokenSymbol: 'RHINO',
+    poolType: PoolType.CAKE,
     icon: '/rhino.png',
     refUrl: 'https://pandaswap.xyz/#/swap?outputCurrency=0xd2eca3cff5f09cfc9c425167d12f0a005fc97c8c',
   },
