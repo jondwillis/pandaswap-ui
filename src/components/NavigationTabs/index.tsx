@@ -7,6 +7,7 @@ import { NavLink, Link as HistoryLink } from 'react-router-dom'
 import { ArrowLeft } from 'react-feather'
 import { RowBetween } from '../Row'
 import QuestionHelper from '../QuestionHelper'
+import { ExternalLink } from '../../theme'
 
 const Tabs = styled.div`
 	${({ theme }) => theme.flexRowNoWrap}
@@ -52,7 +53,7 @@ const StyledArrowLeft = styled(ArrowLeft)`
 	color: ${({ theme }) => theme.text1};
 `
 
-export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' | 'analytics' }) {
+export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' | 'analytics' | 'bamboo' | 'rhino' }) {
 	const { t } = useTranslation()
 	return (
 		<Tabs style={{ marginBottom: '20px' }}>
@@ -65,12 +66,22 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' | 'farm' | 'a
 			<StyledNavLink id={`farm-nav-link`} to={'/farm'} isActive={() => active === 'farm'}>
 				{t('farm')}
 			</StyledNavLink>
-			<StyledNavLink id={`analytics-nav-link`} to={'/analytics'} isActive={() => active === 'analytics'}>
-				{t('analytics')}
-			</StyledNavLink>
+			<StyledExternalLink href={'https://farms.pandaswap.xyz/staking'}>🎋</StyledExternalLink>
+			<StyledExternalLink href={'https://farms.pandaswap.xyz/rhino'}>🦏</StyledExternalLink>
 		</Tabs>
 	)
 }
+
+const StyledExternalLink = styled(ExternalLink)`
+	font-size: 0.825rem;
+	color: ${({ theme }) => theme.text3};
+	margin-left: 1rem;
+	font-size: 0.825rem;
+	display: flex;
+	:hover {
+		color: ${({ theme }) => theme.text2};
+	}
+`
 
 export function FindPoolTabs() {
 	return (
