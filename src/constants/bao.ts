@@ -339,15 +339,15 @@ export const supportedPools: SupportedPool[] = [
     refUrl: 'https://pandaswap.xyz/#/swap?outputCurrency=0xd2eca3cff5f09cfc9c425167d12f0a005fc97c8c',
   },
   {
-    pid: 94,
+    pid: 93,
     lpAddresses: {
-      56: '0x999fd87aA406adB81809bab15681f655d8a049FF',
+      56: '0x92dc12e0eb47b287b4d91976d4eb968f61822531',
     },
     tokenAddresses: {
       56: [tokenMap.RHINO, tokenMap.BNB],
     },
     tokenDecimals: 9,
-    name: 'Rhino Remoulade',
+    name: 'Rhino Runbles',
     symbol: 'RHINO-BNB CAKELP',
     tokenSymbol: 'RHINO',
     poolType: PoolType.CAKE,
