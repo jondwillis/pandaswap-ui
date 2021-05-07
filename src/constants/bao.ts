@@ -331,7 +331,7 @@ export const supportedPools: SupportedPool[] = [
     tokenAddresses: {
       56: [tokenMap.RHINO, tokenMap.BNB],
     },
-    tokenDecimals: 18,
+    tokenDecimals: 9,
     name: 'Rhino Remoulade',
     symbol: 'RHINO-BNB PNDA-V2',
     tokenSymbol: 'RHINO',
@@ -346,8 +346,8 @@ export const supportedPools: SupportedPool[] = [
     tokenAddresses: {
       56: [tokenMap.RHINO, tokenMap.BNB],
     },
-    tokenDecimals: 9,
-    name: 'Rhino Runbles',
+    tokenDecimals: 18,
+    name: 'Rhino Rumbles',
     symbol: 'RHINO-BNB CAKELP',
     tokenSymbol: 'RHINO',
     poolType: PoolType.CAKE,
